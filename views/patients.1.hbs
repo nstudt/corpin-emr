@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+{{> head}}
+
+<body>
+    {{> header}}
+    {{> navbar}}
+    <div class="container">
+        <h2>Patients</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Middle Name</th>
+                    <th>City</th>
+                    <th>Last Visit</th>
+                    
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each obj}}
+                <tr>
+                    <td>{{doc.last_name}}</td>
+                    <td>{{doc.first_name}}</td>
+                    <td>{{doc.middle_name}}</td>
+                    <td>{{doc.city}}</td>
+                    <td>{{doc.middle_name}}</td>
+                    <td>{{doc.lst_visit}}</td>
+                    <input name="{{doc._rev}}"title="{{doc._id}}" type="file" style="display:none;" id="inputfile"/>
+                    <td><a class="btn btn-info btn-sm" href="javascript:document.getElementById('inputfile').click(); ">Add File</a></td>
+                    <td><a href='/edit/{{doc._id}}' class="btn btn-info btn-sm" >Edit</a></td>
+
+                    {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+{{!-- <p>No Patients Found</p> --}}
+{{!-- {{/each}}
+{{!-- bootstrap file browser
+<div class="custom-file">
+    <input type="file" class="custom-file-input" id="customFile">
+    <label class="custom-file-label" for="customFile">Choose file</label>
+</div> --}}
+
+{{> footer}}
+
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+{{> head}}
+
+<body>
+    {{> header}}
+    {{> navbar}}
+
+
+
+    <!-- Header -->
+    <header class="w3-container w3-theme w3-padding-8" id="myHeader">
+        
+        <div class="w3-center">
+            <h4>Responsive Healthcare for the Philippines</h4>
+            <h1 class="w3-xxxlarge w3-animate-bottom">Corpin EMR</h1>
+            <div class="w3-padding-16">
+                <button class="w3-btn w3-xlarge w3-dark-grey w3-hover-light-grey" onclick="document.getElementById('id01').style.display='block'"
+                    style="width:auto;">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="w3-row-padding w3-center w3-margin-top">
+        <div class="w3-quarter">
+            <div class="w3-card w3-container "  style="min-height:460px">
+                <h3>Responsive</h3><br>
+                <iframe src="https://www.philhealth.gov.ph/news/" frameborder="0" width="100%" height="480"></iframe>
+            </div>
+        </div>
+
+        <div class="w3-half">
+            <div class="w3-card w3-container" style="min-height:460px">
+                <h3>Standard CSS</h3><br>
+                <iframe src="https://www.healthmap.org/en/" frameborder="0" width="100%" height="480"></iframe>
+            </div>
+        </div>
+
+        <div class="w3-quarter">
+            <div class="w3-card w3-container" style="min-height:460px">
+                <h3>Design</h3><br>
+                <iframe src="http://www.who.int/csr/don/en/" frameborder="0" width="100%" height="480"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="id01" class="w3-modal">
+        <form class="modal-content w3-card-4 w3-third w3-display-middle w3-animate-opacity" action="/">
+            <header class="w3-container w3-blue">
+                <h1>Login</h1>
+            </header>
+
+            <div class="w3-container w3-margin-top">
+                <form class="w3-container w3-card-4" action="/" method='post'>
+                    <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                    <p>
+                        <input name="login_name" class="w3-input" type="text"  required>
+                        <label>Login Name</label></p>
+                    <p> <input name="password" class="w3-input" type="password"  required>
+                        <label>Password</label></p>
+                    <p> <input id="stay" class="w3-check" type="checkbox" checked="checked">
+                        <label>Stay logged in</label></p>
+                    <p>  <button type="submit" class="w3-button w3-section w3-teal w3-ripple"> Log in </button></p>
+
+                </form>
+
+            </div>
+    </div>
+
+ 
+</body>
+</html>

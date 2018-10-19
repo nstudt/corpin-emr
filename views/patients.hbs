@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+{{> head}}
+
+<body>
+    {{> header}}
+    {{> navbar}}
+    <div class="card w-100">
+
+        <div class="card-body border-primary ">
+            <div class="container">
+                <h4 class="card-header text-center">Patients</h4>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Middle Name</th>
+                            <th>City</th>
+                            <th>Last Visit</th>
+                            <th></th>
+                            <th></th>
+                            <th>Add Records</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{#each obj}}
+                        <tr>
+                            <td>{{doc.last_name}}</td>
+                            <td>{{doc.first_name}}</td>
+                            <td>{{doc.middle_name}}</td>
+                            <td>{{doc.city}}</td>
+                            <td>{{doc.last_visit}}</td>
+                              <td><a method="get" href="/patients/edit/{{doc._id}}" class="btn btn-primary btn-sm">Edit</a></td>
+                            <td><a href='/view/{{doc._id}}' class="btn btn-primary btn-sm">View</a></td>
+                            <td>
+                                <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+                                    <input type="hidden" name="id" value="{{doc._id}}" />
+                                    <input type="hidden" name="rev" value="{{doc._rev}}" />
+                                    <div class="btn-group" role = "group">
+                                    <input id="fupload" class=" btn-sm" value="browse" type="file" name="fileUpload" />
+                                    <input class="btn btn-outline-primary btn-sm" type='submit' value='Upload!' />
+                                    </div>
+                                </form>
+                            </td>
+                          
+
+                            {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+{{!-- <p>No Patients Found</p> --}}
+{{!-- {{/each}}
+{{!-- bootstrap file browser
+<div class="custom-file">
+    <input type="file" class="custom-file-input" id="customFile">
+    <label class="custom-file-label" for="customFile">Choose file</label>
+</div> --}}
+
+{{> footer}}
+
+</body>
+
+</html>

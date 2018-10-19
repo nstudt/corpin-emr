@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+
+{{> head}}
+
+
+
+
+<body>
+  {{> header}}
+  {{> navbar}}
+  {{!-- top container --}}
+  <div class="w3-center w3-container w3-padding-small">
+    <h3 class="w3-center">Examination Room 1 - {{patient.last_name}}</h3>
+    <p><a href="/soap/{{patient._id}}" target="iframe_a" > Start Encounter</a></p>
+    {{!-- <p><a href="#" id="delDoc" style="visibility: hidden"> <span style="color:blue">delete document</span> </a></p> --}}
+   </div>
+  {{!-- left sidebar --}}
+  <div class="w3-row-padding w3-center w3-margin-top">
+    <div class="w3-quarter">
+      <div class="w3-card w3-container" style="min-height:500px">
+
+        <ul class="w3-ul">
+          <li class="w3-blue w3-padding-small">Last Name</li>
+          <li class="w3-padding-small">{{patient.last_name}}</li>
+          <li class="w3-blue w3-padding-small">First Name</li>
+          <li class="w3-padding-small">{{patient.first_name}}</li>
+          <li class="w3-blue w3-padding-small">Phone</li>
+          <li class="w3-padding-small">{{patient.phone1}}</li>
+          <li class="w3-blue w3-padding-small">City</li>
+          <li class="w3-padding-small">{{patient.city}}</li>
+          <li class="w3-blue w3-padding-small">Last Visit</li>
+          <li class="w3-padding-small">{{patient.last_visit}}</li>
+          <li class="w3-blue w3-padding-small">Visits</li>
+           {{#each visits}}           
+          <li class="w3-padding-small text-center"><input type="button" onclick='display_visit({{json doc}})' value={{doc.date}} /></li>
+          {{/each}}
+          <p>
+            <li class="w3-blue w3-padding-small text-center">Records</li>
+          </p>
+
+          {{#each patient._attachments}}
+          <div class="patient_attachments w3-center"><input class="w3-padding-small btn btn-primary ml-2 mb-1" href="#" onclick=temp({{json data}}) value="Record"></div>
+          {{/each}}
+
+        </ul>
+      </div>
+    </div>
+{{!-- center frame --}}
+    <div class="w3-half">
+      <div class="w3-card w3-container " style="min-height:500px">
+        <iframe class="mx-2  w3-large" id="frame1" height="600px" width="100%" src="" name="iframe_a"></iframe>
+      </div>
+    </div>
+{{!-- right sidebar --}}
+    <div class="w3-quarter">
+      <div class="w3-card w3-container" style="min-height:500px">
+        <ul class="w3-ul">
+          <li class="w3-blue w3-padding-small">Blood Type</li>
+          <li class="w3-padding-small">{{patient.blood_type}}</li>
+          <li class="w3-blue w3-padding-small">Allergies</li>
+          <li class="w3-padding-small">{{patient.allergies}}</li>
+          <li class="w3-blue w3-padding-small">Medications</li>
+          <li class="w3-padding-small">{{patient.medications}}</li>
+          <li class="w3-blue w3-padding-small">Height</li>
+          <li class="w3-padding-small">{{patient.height}}</li>
+          <li class="w3-blue w3-padding-small">Weight</li>
+          <li class="w3-padding-small">{{patient.weight}}</li>
+          <li class="w3-blue w3-padding-small">Blood Pressure</li>
+          <li class="w3-padding-small">{{patient.blood_pressure}}</li>
+          <li class="w3-blue w3-padding-small">Pulse bpm</li>
+          <li class="w3-padding-small">{{patient.pulse}}</li>
+          <li class="w3-blue w3-padding-small">Temperature</li>
+          <li class="w3-padding-small">{{patient.temp}}</li>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function temp(d) {
+      document.getElementById('frame1').removeAttribute("srcdoc");
+      x = document.getElementById('frame1').src = 'data:application/pdf;base64,' + d;
+    }
+  </script>
+  <script>
+    var x = document.getElementsByClassName('patient_attachments');
+
+    function changeVisibility(){
+         document.getElementById('delDoc').style.visibility = "visible";
+       }
+
+    for (i = 0; i < x.length; i++){
+      x[i].addEventListener("click",changeVisibility)
+    }
+  </script>
+
+  <script>
+    function display_visit(d) {
+     
+      x = document.querySelector('#frame1');
+      x.srcdoc =
+        "<p>Date: "+ d.date+ "<p>" +
+        "<p>Subjective: "+ d.subjective+ "<p>" +
+        "<p>Objective: "+ d.objective+ "<p>" +
+        "<p>Assesment: "+ d.assesment+ "<p>" +
+        "<p>Plan: "+ d.plan+ "<p>"
+        ;
+      x.src = "iframe_a_srcdoc.htm"
+    }
+  </script>
+
+
+</body>
+
+</html>

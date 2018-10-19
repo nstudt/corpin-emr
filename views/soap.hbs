@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+{{> head}}
+<body>
+{{> header}}
+
+
+<div class="w3-card-4  ">
+  <div class="w3-container w3-blue ">
+    <h2>SOAP NOTES </h2>
+  </div>
+  <form class="w3-container" action="/soap/{{id}}" method="post" id="soap-notes">
+    <p>      
+    <label for="subjective" class="w3-text-blue "><h3>SUBJECTIVE</h3></label>
+    <textarea class="w3-rest w3-margin-right w3-padding" id="subjective" rows=8 cols=90 name="subjective" placeholder="enter notes" type="text" form="soap-notes" wrap="hard"></textarea>
+    </p>
+    <p>      
+    <label for="objective" class="w3-text-blue "><h3>OBJECTIVE</h3></label>
+    <textarea class="w3-rest w3-margin-right w3-padding" id="objective" rows=8 cols=90 name="objective" placeholder="enter notes" type="text" form="soap-notes" wrap="hard"></textarea>
+    </p>
+    <p>      
+    <label for="assesment" class="w3-text-blue"><h3>ASSESMENT</h3></label>
+    <textarea class="w3-rest w3-margin-right w3-padding" id="assesment" rows=8 cols=90 name="assesment" placeholder="enter notes" type="text" form="soap-notes" wrap="hard"></textarea>
+    </p>
+    <p>      
+    <label for="plan" class="w3-text-blue"><h3>PLAN</h3></label>
+    <textarea class="w3-rest w3-margin-right w3-padding" id="plan" rows=8 cols=90 name="plan" placeholder="enter notes" type="text" form="soap-notes" wrap="hard"></textarea>
+    </p>
+    
+    <button class="w3-btn w3-blue">Update Records</button></p>
+  </form>
+</div>
+
+<!-- <a href='/' class="btn btn-info btn-sm" target="_parent">View</a> -->
+
+    
+  
+    
+</body>
+</html>
+
+

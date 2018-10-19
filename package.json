@@ -1,0 +1,28 @@
+{
+  "name": "Corpin EMR",
+  "version": "0.1.0",
+  "description": "Responsive Healthcare for the Philippines",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha **/*.js ",
+    "start": "node app.js",
+    "debug": "node --inspect app.js"
+  },
+  "author": "Edwin Studt",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-fileupload": "^1.0.0-alpha.1",
+    "hbs": "^4.0.1",
+    "jquery": "^3.3.1",
+    "pouchdb": "^7.0.0",
+    "pouchdb-find": "^7.0.0",
+    "underscore": "^1.9.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "express-pouchdb": "^4.1.0",
+    "mocha": "^5.2.0"
+  }
+}
