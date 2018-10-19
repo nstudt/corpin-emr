@@ -1,7 +1,9 @@
 # Corpin EMR
 ## Responsive Healthcare for the Philippines
 
-Corpin EMR is designed as an offline-first EMR applicaiton with a number of extensions to facilitate small clinics in the rural Philippines. All core features are vailable without and internet connection.
+(20 October 2018. This first commit is basically a backup. While the client is functional, I have not yet refactored the codebase. I do encourage anyone interested in offline EMR systems to follow the project, but probably better to wait for the refactor before testing)
+
+Corpin EMR is an offline-first EMR applicaiton with a number of extensions to facilitate small clinics in the rural Philippines. All core features are vailable without and internet connection.
 
 Corpin EMR was inspired by HospitalRun in that HospitalRun was intended to serve rural hospitals that had poor or no Internet connectons. The problem with HospitalRun however, was that (besides no working), the entire application was wound into Ember, so there's not chance of ever moving it forward. Corpin EMR uses pretty classic coding techniques, so it's easy to morph and seperate the portions of the MVC.
 
