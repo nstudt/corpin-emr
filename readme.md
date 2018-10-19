@@ -1,13 +1,13 @@
-#Corpin EMR
-##Responsive Healthcare for the Philippines
+# Corpin EMR
+## Responsive Healthcare for the Philippines
 
 Corpin EMR is designed as an offline-first EMR applicaiton with a number of extensions to facilitate small clinics in the rural Philippines. All core features are vailable without and internet connection.
 
 Corpin EMR was inspired by HospitalRun in that HospitalRun was intended to serve rural hospitals that had poor or no Internet connectons. The problem with HospitalRun however, was that (besides no working), the entire application was wound into Ember, so there's not chance of ever moving it forward. Corpin EMR uses pretty classic coding techniques, so it's easy to morph and seperate the portions of the MVC.
 
-Corpin EMR is designed to work the way the local doctors do without making them think about the technology. If a physician is in the clinic, then the applicaiton will find any wireless printers and automatically sync to the Cloud server. When the doctor is out in the field without Internet, records and SOAP notes are always available.
+Corpin EMR is designed to work the way the local doctors do without making them think about the technology. If a physician is in the clinic, then the applicaiton will find any wireless printers and automatically sync to the Cloud. When the doctor is out in the field without Internet, records and SOAP notes are always available.
 
-###Features
+### Features
 - Secure ACL access to data (not yet implemented).
 - Patient management. (CRUD)
 - Encoded (digital) and scanned-paper records management.
@@ -30,7 +30,7 @@ Further, the entire client is intended to be wrapped in Electron for production,
 
 While NoSql does not require a schema, one has been implemented as models classes, for Patients, Users, Visits and Vitals. More will be added as functionality is increased.
 
-###Design Notes
+### Design Notes
 Server: Not completed. I'm looking to implement continuity between client and server code.
 --Couchdb in the cloud: Acts as a direct-connect replicant of the client.
 --The server also provides a REST interfce that allows direct browser access to the application.
@@ -39,13 +39,13 @@ Client: Functional.
 --PouchDB: Most functions wrapped in dbFuncs, but a few still exist in Patients.js
 --app.js is currently both the controller and view. One todo is to move seperate the routes and controllers into a classic MVS with objects.
 
-###Getting Started
+### Getting Started
 1. Clone
 2. Run `npm install`.
 3. `npm start debug`.
 4. from the Admin menu, choose Wipe Data. Create Sample and then Build Index.
 
-###Contributions
+### Contributions
 Uh.. Sure! This has been a solo effort so far, but if more competent coders want to get involved, I'd love the help.
 
 
