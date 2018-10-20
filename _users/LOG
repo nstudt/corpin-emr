@@ -1,5 +1,5 @@
-2018/10/19-15:27:52.625 dca4 Recovering log #1463
-2018/10/19-15:27:52.625 dca4 Level-0 table #1465: started
-2018/10/19-15:27:52.696 dca4 Level-0 table #1465: 287 bytes OK
-2018/10/19-15:27:52.813 dca4 Delete type=0 #1463
-2018/10/19-15:27:52.813 dca4 Delete type=3 #1461
+2018/10/20-10:52:58.495 f848 Recovering log #1472
+2018/10/20-10:52:58.495 f848 Level-0 table #1475: started
+2018/10/20-10:52:58.597 f848 Level-0 table #1475: 287 bytes OK
+2018/10/20-10:52:58.708 f848 Delete type=0 #1472
+2018/10/20-10:52:58.709 f848 Delete type=3 #1470

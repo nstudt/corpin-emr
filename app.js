@@ -1,6 +1,6 @@
 const express = require("express");
 const _ = require('underscore');
-const app = express();
+
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -9,9 +9,13 @@ const dbFuncs = require(__dirname + "/dbFuncs");
 const PouchDB = require("PouchDB");
 PouchDB.plugin(require("pouchdb-find"));
 const fileUpload = require("express-fileupload");
-app.use("/db", require("express-pouchdb")(PouchDB));
+
+const app = express();
+// app.use("/db", require("express-pouchdb")(PouchDB));
+
 
 //todo - move dbname to .config
+var remoteDB = new PouchDB('http://192.168.0.180:2000/patients');
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var pmodel = require(__dirname + "/models/patientModel");
@@ -111,9 +115,7 @@ app.get("/view/:id", (req, res) => {
     });
 });
 
-app.get("/settings", (req, res) => {
-  res.render("settings");
-});
+
 
 app.get("/rxnorm", (req, res) => {
   res.render("rxnorm");
@@ -180,13 +182,16 @@ app.post("/settings/destroy", (req, res) => {
     });
 });
 
+app.get("/settings", (req, res) => {
+  res.render("settings");
+});
+
 //this is the only instance in which a new db is created. db is global.
 app.post("/settings/sample", (req, res) => {
   console.log("creating samples");
   db = new PouchDB(dbname);
   pmodel.samplePatients(db);
   dbFuncs.makeVisits(db);
-
   res.redirect("/");
 });
 app.post("/settings/buildQuery", (req, res) => {
@@ -207,7 +212,16 @@ app.post("/settings/buildQuery", (req, res) => {
 
   res.redirect("/patients");
 });
-
+app.post("/settings/replicate", (req, res) => {
+  db.sync(remoteDB, {
+    live: true
+  }).on('change',(change) =>{
+    console.log('live replication triggered', change)
+  }).on('error',(err) =>{
+    console.log('error in replication to remoteDB', err);
+  })
+  res.end();
+});
 // app.post("/view/encounter", (req, res) ={
 
 // })
