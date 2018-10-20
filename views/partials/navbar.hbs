@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link  w3-large" href="/">Home </a>
+                <a class="nav-link  w3-large" href="/" ><i class="fa fa-home"></i> </a>
             </li>
             <li class="nav-item dropdown w3-large" >
                 <a href="/patients" class="nav-link dropdown-toggle w3-large" data-toggle="dropdown" id="navBarDropdownMenuLink">Patients</a>
@@ -40,8 +40,12 @@
                     <form action= "/settings/destroy" method="POST"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Wipe Data</a>
                     </form>
+                    <a href="/settings/createdb" class="dropdown-item w3-large">Settings</a>
+                    <form action= "/settings/createdb" method="POST"> 
+                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">createdb</a>
+                    </form>
                     <form action= "/settings/sample" method="POST"> 
-                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Create Sample Data</a>
+                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Generate Sample Data</a>
                     </form>
                     <form action= "/settings/buildQuery" method="POST"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Build Index</a>
@@ -53,7 +57,11 @@
                 </div>
             </li>
         </ul>
-       
+       <div>
+           <button type="button" class="btn btn-lg btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off">
+        <div class="handle"></div>
+      </button>
+       </div>
     </div>
       <form class="form-inline my-2 my-lg-0">
            <a class="nav-link w3-right"  href="/settings"> <i class="fas fa-cog"></i> User: admin </a>

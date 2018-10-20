@@ -15,7 +15,7 @@ const app = express();
 
 
 //todo - move dbname to .config
-var remoteDB = new PouchDB('http://192.168.0.180:2000/patients');
+var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var pmodel = require(__dirname + "/models/patientModel");
@@ -170,6 +170,12 @@ app.post("/patients", (req, res) => {
   res.redirect("/patients");
 });
 
+
+
+app.get("/settings", (req, res) => {
+  res.render("settings");
+});
+
 app.post("/settings/destroy", (req, res) => {
   db.destroy()
     .then(response => {
@@ -182,16 +188,18 @@ app.post("/settings/destroy", (req, res) => {
     });
 });
 
-app.get("/settings", (req, res) => {
-  res.render("settings");
-});
-
 //this is the only instance in which a new db is created. db is global.
 app.post("/settings/sample", (req, res) => {
   console.log("creating samples");
   db = new PouchDB(dbname);
   pmodel.samplePatients(db);
   dbFuncs.makeVisits(db);
+  res.redirect("/");
+});
+//this is the only instance in which a new db is created. db is global.
+app.post("/settings/createdb", (req, res) => {
+  console.log("creating fresh db");
+  db = new PouchDB(dbname);
   res.redirect("/");
 });
 app.post("/settings/buildQuery", (req, res) => {
@@ -209,9 +217,9 @@ app.post("/settings/buildQuery", (req, res) => {
     .catch(err => {
       console.log("error in setting/buildQuery", err);
     });
-
   res.redirect("/patients");
 });
+
 app.post("/settings/replicate", (req, res) => {
   db.sync(remoteDB, {
     live: true
@@ -220,7 +228,7 @@ app.post("/settings/replicate", (req, res) => {
   }).on('error',(err) =>{
     console.log('error in replication to remoteDB', err);
   })
-  res.end();
+  res.end;
 });
 // app.post("/view/encounter", (req, res) ={
 
@@ -239,6 +247,7 @@ app.get("/rx", (req, res) => {
     title: title
   });
 });
+
 
 const port = 5000;
 
