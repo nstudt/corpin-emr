@@ -18,6 +18,7 @@
     "jquery": "^3.3.1",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",
+    "scanner.js": "^2.10.3",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2"
   },

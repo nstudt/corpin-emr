@@ -15,6 +15,7 @@ const app = express();
 
 
 //todo - move dbname to .config
+var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
 var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
 var dbname = "patients";
 var db = new PouchDB(dbname);
@@ -48,6 +49,16 @@ app.get("/", (req, res) => {
   res.render("index", {
     title: title
   });
+});
+
+app.get("/scanner",(req, res) => {
+  res.render("scanner");
+});
+
+app.post("/scanner",(req, res) => {
+  console.log(req);
+  console.log(req.body);
+  res.end;
 });
 
 app.get("/soap/:id", (req, res) => {
