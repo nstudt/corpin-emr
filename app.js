@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
 const dbFuncs = require(path.join(__dirname , "dbFuncs"));
-const PouchDB = require("PouchDB");
+const PouchDB = require("pouchdb");
 PouchDB.plugin(require("pouchdb-find"));
 const fileUpload = require("express-fileupload");
 

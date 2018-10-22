@@ -1,5 +1,5 @@
 const uuidv4 = require("uuid/v4");
-const PouchDB = require("PouchDB");
+const PouchDB = require("pouchdb");
 // var db = new PouchDB('patients');
 ("use strict");
 

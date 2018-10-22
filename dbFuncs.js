@@ -1,4 +1,4 @@
-const PouchDB = require("PouchDB");
+const PouchDB = require("pouchdb");
 var pmodel = require("./models/patientModel");
 const bodyParser = require("body-parser");
 ("use strict");
