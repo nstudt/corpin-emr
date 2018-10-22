@@ -14,38 +14,44 @@
                 <div class="form-row">
                     <div class="form-group col-md-3 ">
                         <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" name="first_name" placeholder="first name" value="{{patient.first_name}}"
+                        <input type="text" class="form-control" name="first_name" placeholder="first name" value=""
                             autofocus required>
-                        <input type="hidden" id="custId" name="_id" value="{{patient._id}}">
-                        <input type="hidden" id="custId" name="_rev" value="{{patient._rev}}">
+
                     </div>
                     <div class="form-group col-md-3 ">
                         <label for="middle_name">Middle Name</label>
-                        <input type="text" class="form-control" name="middle_name" placeholder="middle name" value="{{patient.middle_name}}">
+                        <input type="text" class="form-control" name="middle_name" placeholder="middle name" value="">
                     </div>
                     <div class="form-group col-md-3 ">
                         <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" name="last_name" placeholder="last name" required value="{{patient.last_name}}">
+                        <input type="text" class="form-control" name="last_name" placeholder="last name" required value="">
                     </div>
                     {{!-- <div class="form-group col-md-2 ">
                         <img src="" alt="200x200 Picture" class="img-thumbnail">
                     </div> --}}
-                    
+
                     <div class="form-check form-check-inline col-xs-2 ">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sex" id="male" value="male" checked>
+                            <input class="form-check-input" type="radio" name="sex" id="male" value="male" >
                             <label class="form-check-label" for="male">
                                 Male
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sex" id="female" value="female">
+                            <input class="form-check-input" type="radio" name="sex" id="female" value="female" checked>
                             <label class="form-check-label" for="female">
                                 Female
                             </label>
                         </div>
                     </div>
-
+                    <div class="form-group col-md-3 ">
+                        <label for="last_name">Age</label>
+                        <input type="text" id="age" class="form-control" name="age" placeholder="age" value="">
+                    </div>
+                    <div class="form-group col-md-2 ">
+                    <label for="dob">Last Visit</label>
+                    <input id="last_visit" type="text" class="form-control" name="last_visit" placeholder="MM/DD/YY">
+                </div>
                 </div>
         </div>
         <div class="card card-body border-primary">
@@ -54,22 +60,22 @@
             <div class="form-row">
                 <div class="form-group col-md-6 ">
                     <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" placeholder="address" value="{{patient.address}}">
+                    <input type="text" class="form-control" id="address" placeholder="address">
                 </div>
                 <div class="form-group col-md-2 ">
                     <label for="purok">Purok</label>
-                    <input type="text" class="form-control" id="purok" placeholder="purok" value="{{patient.purok}}">
+                    <input type="text" class="form-control" id="purok" placeholder="purok">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" placeholder="city" value="{{patient.city}}">
+                    <input type="text" class="form-control" id="city" placeholder="city">
                 </div>
             </div>
             {{!-- end of form row --}}
             <div class="form-row">
                 <div class="form-group col-md-4 ">
                     <label for="province">Province</label>
-                    <select id="province" class="form-control" value="Surigao del Norte" value="{{patient.province}}">
+                    <select id="province" class="form-control" value="Surigao del Norte">
                         <option>"Surigao del Norte"</option>
                         <option> "Dinagat"</option>
                         <option> "Surigao del Sur"</option>
@@ -90,11 +96,11 @@
             <div class="form-row">
                 <div class="form-group col-md-4 ">
                     <label for="dob">Date of Birth</label>
-                    <input type="text" class="form-control" name="dob" size="15" placeholder="MM/DD/YY" value="{{patient.dob}}">
+                    <input id="dob" type="text" class="form-control" name="dob" size="15" placeholder="MM/DD/YY">
                 </div>
-                <div class="form-group col-md-2" >
+                <div class="form-group col-md-2">
                     <label for=" blood_type">Blood Type</label>
-                    <select id="blood_type" class="form-control" default="unkown" value="{{patient.blood_type}}">
+                    <select id="blood_type" class="form-control" default="unkown">
                         <option>unknown</option>
                         <option>O-</option>
                         <option> O+</option>
@@ -107,13 +113,10 @@
                     </select>
                 </div>
 
-                <div class="form-group col-md-2 ">
-                    <label for="dob">Last Visit</label>
-                    <input type="text" class="form-control" name="last_visit" placeholder="MM/DD/YY" value="{{patient.last_visit}}">
-                </div>
+                
                 <div class="form-group col-md4 ">
                     <label for="phil_health">PhilHelath #</label>
-                    <input type="text" class="form-control" name="phil_health" placeholder="PhilHealth" value="{{patient.phil_health}}">
+                    <input type="text" class="form-control" name="phil_health" placeholder="PhilHealth">
                 </div>
 
             </div>
@@ -155,6 +158,22 @@
             </form>
 
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelector('#last_visit').onchange = changeEventHandler;
+            }, false);
+
+            function changeEventHandler(event) {
+                var d = new Date(event.target.value);
+                var age = document.getElementById('age').value;
+                d.setMonth(d.getMonth() - (age * 12));
+                d.setDate(1);
+                d.setMonth(1);
+                const x = document.getElementById('dob');
+                x.value = d.toDateString().split(' ').slice(1).join(' ');
+            }
+        </script>
+
 </body>
 
 </html>

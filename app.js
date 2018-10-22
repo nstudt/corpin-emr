@@ -5,7 +5,7 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
-const dbFuncs = require(__dirname + "/dbFuncs");
+const dbFuncs = require(path.join(__dirname , "dbFuncs"));
 const PouchDB = require("PouchDB");
 PouchDB.plugin(require("pouchdb-find"));
 const fileUpload = require("express-fileupload");
@@ -19,11 +19,11 @@ var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
 var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
 var dbname = "patients";
 var db = new PouchDB(dbname);
-var pmodel = require(__dirname + "/models/patientModel");
+var pmodel = require(path.join(__dirname, "models/patientModel"));
 
 ("use strict");
 
-hbs.registerPartials(__dirname + "/views/partials");
+hbs.registerPartials(path.join(__dirname , "views/partials"));
 //call this to pass data from an onclick to javascript function in the view
 hbs.registerHelper("json", function(obj) {
   return new hbs.SafeString(JSON.stringify(obj));
