@@ -15,8 +15,8 @@ const app = express();
 
 
 //todo - move dbname to .config
-var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
-var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+// var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
+// var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var pmodel = require(path.join(__dirname, "models/patientModel"));
