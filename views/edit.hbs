@@ -62,21 +62,34 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" name="city"  value="{{patient.city}}">
+                    <input type="text" class="form-control" id="city" name="city" list="cities" value="{{patient.city}}">
+                    <datalist id="cities">
+                        <option> General Luna</option>
+                        <option> Dapa</option>
+                        <option> Pilar</option>
+                        <option>Santa Monica</option>
+                        <option>Del Carmen</option> 
+                        <option>San Isidro</option> 
+                        <option>Pacifico</option> 
+                        <option>Burgos</option> 
+                        <option>Soccorro</option> 
+                        <option>San Benito</option> 
+                        <option>Alegria</option> 
+                    </datalist>
                 </div>
             </div>
             {{!-- end of form row --}}
             <div class="form-row">
                 <div class="form-group col-md-4 ">
                     <label for="province">Province</label>
-                    <select id="province" class="form-control" name="province" value="Surigao del Norte" value="{{patient.province}}">
-                        <option>"Surigao del Norte"</option>
-                        <option> "Dinagat"</option>
-                        <option> "Surigao del Sur"</option>
-                        <option> "Agusan"</option>
-                        <option> "Davao del Norte"</option>
-                        <option> "Davao del Sur"</option>
-                    </select>
+                    <input type="text" id="province" class="form-control" name="province" list="provinces" value="{{patient.province}}">
+                    <datalist id="provinces">
+                        <option> Surigao del Norte</option>
+                        <option> Dinagat</option>
+                        <option> Agusan</option>
+                        <option>Bohol</option>
+                        <option>Surigao del Sur</option> 
+                    </datalist>
                 </div>
 
                 <div class="form-group col-md-4 ">
