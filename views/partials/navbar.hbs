@@ -40,19 +40,22 @@
                     {{!-- <form action= "/settings/destroy" method="POST"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Wipe Data</a>
                     </form> --}}
-                    {{!-- <a href="/settings/createdb" class="dropdown-item w3-large">Settings</a> --}}
-                    {{!-- <form action= "/settings/createdb" method="POST"> 
+                    {{!-- <a href="/settings/createdb" class="dropdown-item w3-large">Settings</a>
+                    <form action= "/settings/createdb" method="POST"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">createdb</a>
-                    </form>
-                    <form action= "/settings/sample" method="POST"> 
+                    </form> --}}
+                    {{!-- <form action= "/settings/sample" method="POST"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Generate Sample Data</a>
                     </form> --}}
-                    {{!-- <form action= "/settings/buildQuery" method="POST"> 
+                    <form action= "/settings/buildQuery" method="GET"> 
                     <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Build Index</a>
-                    </form> --}}
-                    <form action= "/settings/replicate" method="POST"> 
-                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Replicate</a>
                     </form>
+                    <form action= "/settings/replicate_patients" method="GET"> 
+                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Replicate Patients</a>
+                    </form>
+                    {{!-- <form action= "/settings/replicate_users" method="GET"> 
+                    <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Replicate Users</a>
+                    </form> --}}
                     
                 </div>
             </li>

@@ -71,13 +71,7 @@ class Patient {
     this.temp = obj.temp;
     this.age = this.constructor.calculate_age(obj.dob);
     this.files_meta = obj.files_meta
-    // [
-    //     {
-    //         attID: '',
-    //         fileName: '',
-    //         added: new Date()
-    //     }
-    // ];
+   
   };
   static calculate_age(strDate) { 
     var dob= new Date(strDate);
@@ -85,16 +79,16 @@ class Patient {
     var age_dt = new Date(diff_ms); 
   
     return Math.abs(age_dt.getUTCFullYear() - 1970);
-}
+};
 
   //used for files
   static createUUID() {
     return uuidv4();
-  }
+  };
   
   full_name() {
     return this.first_name + " " + this.last_name;
-  }
+  };
 
  
   //only useed to create new patient, but same function as update
@@ -107,9 +101,9 @@ class Patient {
       } else {
         console.log("successfully created ", response.id);
         return response;
-      }
+      };
     });
-  }
+  };
   //same function as save()
   update(db, doc) {
     db.put(doc, function(err, response) {
@@ -120,7 +114,7 @@ class Patient {
         return response;
       }
     });
-  }
+  };
   
 }
 

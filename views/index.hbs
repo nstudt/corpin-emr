@@ -45,17 +45,17 @@
     </div>
     <!-- Modal -->
     <div id="id01" class="w3-modal">
-        <form class="modal-content w3-card-4 w3-third w3-display-middle w3-animate-opacity" action="/">
+        <form class="modal-content w3-card-4 w3-third w3-display-middle w3-animate-opacity" action="/login" method="post">
             <header class="w3-container w3-blue">
                 <h1>Login</h1>
             </header>
 
             <div class="w3-container w3-margin-top">
-                <form class="w3-container w3-card-4" action="/" method='post'>
+                <form class="w3-container w3-card-4" action="/login" method='post'>
                     <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
                     <p>
-                        <input name="login_name" class="w3-input" type="text"  required>
-                        <label>Login Name</label></p>
+                        <input name="user_name" class="w3-input" type="text"  required>
+                        <label>User Name</label></p>
                     <p> <input name="password" class="w3-input" type="password"  required>
                         <label>Password</label></p>
                     <p> <input id="stay" class="w3-check" type="checkbox" checked="checked">

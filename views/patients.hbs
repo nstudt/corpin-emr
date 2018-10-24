@@ -32,10 +32,10 @@
                             <td>{{doc.middle_name}}</td>
                             <td>{{doc.city}}</td>
                             <td>{{doc.last_visit}}</td>
-                              <td><a method="get" href="/patients/edit/{{doc._id}}" class="btn btn-primary btn-sm">Edit</a></td>
+                              <td><a href="/patients/edit/{{doc._id}}" class="btn btn-primary btn-sm">Edit</a></td>
                             <td><a href='/view/{{doc._id}}' class="btn btn-primary btn-sm">View</a></td>
                             <td>
-                                <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+                                <form ref='uploadForm' id='uploadForm' action="/patients/upload" method='post' encType="multipart/form-data">
                                     <input type="hidden" name="id" value="{{doc._id}}" />
                                     <input type="hidden" name="rev" value="{{doc._rev}}" />
                                     <div class="btn-group" role = "group">

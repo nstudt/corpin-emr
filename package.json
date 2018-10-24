@@ -14,8 +14,11 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "express-fileupload": "^1.0.0-alpha.1",
+    "express-session": "^1.15.6",
     "hbs": "^4.0.1",
     "jquery": "^3.3.1",
+    "module-alias": "^2.1.0",
+    "pbkdf2-password": "^1.2.1",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",
     "scanner.js": "^2.10.3",
@@ -25,5 +28,13 @@
   "devDependencies": {
     "express-pouchdb": "^4.1.0",
     "mocha": "^5.2.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@routes": "routes",
+    "@models": "models",
+    "@views": "views",
+    "@controllers": "controllers",
+    "@test": "test"
   }
 }

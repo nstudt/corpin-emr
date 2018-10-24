@@ -3,7 +3,18 @@ var pmodel = require("./models/patientModel");
 const bodyParser = require("body-parser");
 ("use strict");
 
-
+// declare views
+var ddoc2 = {
+    _id: '_design/index2',
+    views: {
+        "users_only": {
+            map: function (doc) {
+                if(doc.type == 'user'){
+                    emit(doc._id)};
+                 }.toString()
+        }
+    }
+};
 // declare views
 var ddoc = {
     _id: '_design/index',
@@ -19,26 +30,34 @@ var ddoc = {
                 if(doc.type == 'patient'){
                     emit(doc._id)};
                  }.toString()
+        },
+        "users_only": {
+            map: function (doc) {
+                if(doc.type == 'user'){
+                    emit(doc._id)};
+                 }.toString()
         }
-       
     }
 };
 
 //appends visit _id to patient record
 //error 412 (missing _id), which is obviously there. No idea.
 function addVisitId(db, p_id, v_id, v_date) {
-    return new Promise((resolve, reject) => {
+    
     return db.query("index/patients_only", {key: p_id, include_docs: true})
     .then(function(doc) {
-        doc.rows[0].doc.visit_ids.push(v_id)
-        doc.rows[0].doc.last_visit = v_date
-        db.put(doc).then((result) => {
-            console.log(result)
+        doc.rows[0].doc.visit_ids.push(v_id).then(()=> {
+            doc.rows[0].doc.last_visit = v_date
+        }).then(() => {
+            db.put(doc).then((result) => {
+                console.log(result)
+        })
+        
+        
         }).catch((err) => {
             console.log('error in addVisitID', err);
         });
     });
-})
 }
 function buildQuery(db) {
     return new Promise((resolve, reject) => {
@@ -57,7 +76,7 @@ function dbQuery(db, q, opts) {
             //handle response
             console.log('dbQuery response: ',response.rows);
         }).catch((err) => {
-            console.log('error in dbQuery: ',err)
+            console.log(`error in dbQuery: ${q} ${err} `)
         });  
 }
 function makeVisits(db) {
@@ -68,7 +87,34 @@ function makeVisits(db) {
       .catch(err => {
         console.log("error makeVisits", err);
       });
+
   }
+  function create(db, body){
+      db.put(body).then((result) => {
+          console.log(result)
+      }).catch((err) => {
+          console.log('error during dbFuncs create', err)
+      });
+  }
+
+  function remove(db, body){
+    db.get(body._id).then((doc) => {
+        return db.remove(doc);
+    }).then((result) => {
+        console.log(result)
+    }).catch((err) => {
+        console.log('error diuring delete', err)
+    });
+}
+
+  function create_sample_user(udb, obj){
+    udb.put(obj).then((result) => {
+        console.log('created sample user', result)
+    }).catch((err) => {
+        console.log('error in creating sample user', err)
+    });
+  }
+
   //the calling function needs to be wrapped in a promise
   function update(db, body){
     return db.get(body._id)
@@ -147,5 +193,8 @@ module.exports = {
     makeVisits,
     addVisitId,
     update,
+    create,
+    remove,
+    create_sample_user,
     
   };

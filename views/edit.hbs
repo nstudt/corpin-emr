@@ -54,22 +54,22 @@
             <div class="form-row">
                 <div class="form-group col-md-6 ">
                     <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address"  value="{{patient.address}}">
+                    <input type="text" class="form-control" id="address" name="address"  value="{{patient.address}}">
                 </div>
                 <div class="form-group col-md-2 ">
                     <label for="purok">Purok</label>
-                    <input type="text" class="form-control" id="purok"  value="{{patient.purok}}">
+                    <input type="text" class="form-control" id="purok" name="purok"  value="{{patient.purok}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city"  value="{{patient.city}}">
+                    <input type="text" class="form-control" id="city" name="city"  value="{{patient.city}}">
                 </div>
             </div>
             {{!-- end of form row --}}
             <div class="form-row">
                 <div class="form-group col-md-4 ">
                     <label for="province">Province</label>
-                    <select id="province" class="form-control" value="Surigao del Norte" value="{{patient.province}}">
+                    <select id="province" class="form-control" name="province" value="Surigao del Norte" value="{{patient.province}}">
                         <option>"Surigao del Norte"</option>
                         <option> "Dinagat"</option>
                         <option> "Surigao del Sur"</option>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group col-md-2" >
                     <label for=" blood_type">Blood Type</label>
-                    <select id="blood_type" class="form-control" default="unkown" value="{{patient.blood_type}}">
+                    <select id="blood_type" class="form-control" name="blood_type" default="unkown" value="{{patient.blood_type}}">
                         <option>unknown</option>
                         <option>O-</option>
                         <option> O+</option>
@@ -107,7 +107,7 @@
                 </div>
 
                 <div class="form-group col-md-2 ">
-                    <label for="dob">Last Visit</label>
+                    <label for="last_visit">Last Visit</label>
                     <input type="text" class="form-control" name="last_visit" placeholder="MM/DD/YY" value="{{patient.last_visit}}">
                 </div>
                 <div class="form-group col-md4 ">
@@ -121,31 +121,31 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="allergies">Allergies</label>
-                        <input type="text" class="form-control" name="allergies" placeholder="seperate with comma" value={{patienet.allergies}}>
+                        <input type="text" class="form-control" name="allergies" placeholder="seperate with comma" value="{{patienet.allergies}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="medications">Medications</label>
-                        <input type="text" class="form-control" name="medications" placeholder="seperate with comma" value={{patienet.medications}}>
+                        <input type="text" class="form-control" name="medications" placeholder="seperate with comma" value="{{patienet.medications}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="height">Height</label>
-                        <input type="text" class="form-control" name="height" placeholder="in cm" value={{patienet.height}}>
+                        <input type="text" class="form-control" name="height" placeholder="in cm" value="{{patienet.height}}">
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="height">Weigth (kg)</label>
-                        <input type="text" class="form-control" name="height" placeholder="kg" value={{patienet.weight}}>
+                        <label for="weight">Weigth (kg)</label>
+                        <input type="text" class="form-control" name="weight" placeholder="kg" value="{{patienet.weight}}">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="blood_pressure">Blood Pressure (sys/dia)</label>
-                        <input type="text" class="form-control" name="blood_pressure" value={{patienet.blood_pressure}}>
+                        <input type="text" class="form-control" name="blood_pressure" value="{{patienet.blood_pressure}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="pulse">Pulse (bpm)</label>
-                        <input type="text" class="form-control" name="pulse" value={{patienet.pulse}}>
+                        <input type="text" class="form-control" name="pulse" value="{{patienet.pulse}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="temp">Temperature (C)</label>
-                        <input type="text" class="form-control" name="temp" value={{patienet.temperature}}>
+                        <input type="text" class="form-control" name="temp" value="{{patienet.temperature}}">
                     </div>
                 </div>
             </div>
