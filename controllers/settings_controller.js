@@ -23,7 +23,8 @@ hbs.registerPartials("../views/partials");
 "use strict";
 //todo - move dbname to .config
 // var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
-var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+// var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+var remoteDB = new PouchDB('http://192.168.0.180:2000/patients');
 
 module.exports.render_settings = ((req, res) => {
     res.render("settings"); 
@@ -51,13 +52,16 @@ module.exports.delete_db = ((req, res) => {
     
 });
 module.exports.sample_data = ((req, res) => {
-    console.log("creating samples");
-    db = new PouchDB(dbname);
-    pmodel.samplePatients(db);
-    dbFuncs.makeVisits(db);
-    dbFuncs.create_sample_user(udb, suser);
-    res.redirect("/");
+    console.log("creating samples")
+      udb = new PouchDB(udb_name)
+    db = new PouchDB(dbname)
+    pmodel.samplePatients(db)
+    dbFuncs.makeVisits(db)
+    dbFuncs.create_sample_user(udb, suser)
+    delete suser;
+      res.redirect("/");
 });
+
 module.exports.build_index = ((req, res) => {
     // var newPatient = new pmodel.Patient();
   console.log("building query");
@@ -65,7 +69,7 @@ module.exports.build_index = ((req, res) => {
   udb = new PouchDB(udb_name);
   dbFuncs.buildQuery(db)
   .then(() => {
-    dbFuncs.buildQuery(udb)
+    dbFuncs.buildQuery2(udb)
   })    
     .then(() => {
       dbFuncs.dbQuery(db, "index/visits", "a123456");
@@ -75,7 +79,7 @@ module.exports.build_index = ((req, res) => {
       dbFuncs.dbQuery(udb, "index2/users_only" );
     }).then(() => {
       udb.allDocs().then((docs) => {
-        console.log(docs.rows);
+        console.log('usb data: ',docs.rows);
       })
     }).catch(err => {
       console.log("error in setting/buildQuery", err);
@@ -104,6 +108,7 @@ module.exports.replicate_users = ((req, res) => {
     setTimeout(res.redirect('/patients'),3000);
 });
 
+// no var so suser can be deleted after used
 suser = {
   _id: "la23ks45jf76",
   type: "user",

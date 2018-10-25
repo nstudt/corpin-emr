@@ -46,14 +46,10 @@ function addVisitId(db, p_id, v_id, v_date) {
     
     return db.query("index/patients_only", {key: p_id, include_docs: true})
     .then(function(doc) {
-        doc.rows[0].doc.visit_ids.push(v_id).then(()=> {
-            doc.rows[0].doc.last_visit = v_date
-        }).then(() => {
-            db.put(doc).then((result) => {
-                console.log(result)
-        })
-        
-        
+        doc.rows[0].doc.visit_ids.push(v_id)
+        doc.rows[0].doc.last_visit = v_date
+        db.put(doc).then((result) => {
+            console.log(result)
         }).catch((err) => {
             console.log('error in addVisitID', err);
         });
@@ -62,6 +58,16 @@ function addVisitId(db, p_id, v_id, v_date) {
 function buildQuery(db) {
     return new Promise((resolve, reject) => {
         return db.put(ddoc).then((result) => {
+            resolve(console.log('secondary indexes built: ',result))
+        }).catch((err) => {
+            console.log('error in build query', err)
+        });
+    });
+    
+}
+function buildQuery2(udb) {
+    return new Promise((resolve, reject) => {
+        return udb.put(ddoc2).then((result) => {
             resolve(console.log('secondary indexes built: ',result))
         }).catch((err) => {
             console.log('error in build query', err)
@@ -89,11 +95,17 @@ function makeVisits(db) {
       });
 
   }
+  //abstracted without validation. Ensure correct body is passed in
   function create(db, body){
-      db.put(body).then((result) => {
-          console.log(result)
-      }).catch((err) => {
-          console.log('error during dbFuncs create', err)
+      db.put(body)
+      .then((result) => {
+          //display the doc just created
+          db.get(result._id, {include_docs: true})
+          .then((doc) => {
+            console.log(doc.rows)
+          }).catch((err) => {
+              console.log('error in dbFuncs.create', err)
+          });
       });
   }
 
@@ -108,11 +120,18 @@ function makeVisits(db) {
 }
 
   function create_sample_user(udb, obj){
-    udb.put(obj).then((result) => {
+    return new Promise((resolve, reject) => {
+        return udb.put(obj)
+    .then((result) => {
         console.log('created sample user', result)
+        resolve('success')
+    }).then((resolve) => {
+        console.log(resolve)
     }).catch((err) => {
         console.log('error in creating sample user', err)
     });
+    });
+    
   }
 
   //the calling function needs to be wrapped in a promise
@@ -196,5 +215,6 @@ module.exports = {
     create,
     remove,
     create_sample_user,
+    buildQuery2,
     
   };

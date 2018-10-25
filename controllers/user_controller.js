@@ -22,14 +22,17 @@ hbs.registerPartials("../views/partials");
 module.exports.create_user = (req, res) => {
   // console.log(`create user req.body ${req.body}`);
   var muser = new umodel.User(req.body);
-  udb.put(muser).then(result => {
-    udb.get(result.id, {include_docs: true}).then((doc) => {
-    console.log(doc)
-    res.redirect("/users");
-})
-    }).catch(err => {
-      console.log("error in create_user", err);
-    });
+  dbFuncs.create(udb, muser);
+//   udb.put(muser)
+//   .then((result) => {
+//     return udb.get(result.id, {include_docs: true}
+//       ).then((doc) => {
+//     console.log(doc)
+//     res.redirect("/users");
+// })
+//     }).catch(err => {
+//       console.log("error in create_user", err);
+//     });
 };
 
 module.exports.update_user = (req, res) => {
@@ -41,7 +44,7 @@ module.exports.update_user = (req, res) => {
 };
 
 module.exports.render_users = (req, res) => {
-  udb.query("index/users_only", { include_docs: true })
+  udb.query("index2/users_only", { include_docs: true })
     .then(function(response) {
       res.render("users", {
         obj: response.rows
