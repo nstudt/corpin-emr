@@ -16,7 +16,7 @@ var ddoc2 = {
     }
 };
 // declare views
-var ddoc = {
+var ddoc1 = {
     _id: '_design/index',
     views: {
         "visits": {
@@ -57,7 +57,7 @@ function addVisitId(db, p_id, v_id, v_date) {
 }
 function buildQuery(db) {
     return new Promise((resolve, reject) => {
-        return db.put(ddoc).then((result) => {
+        return db.put(ddoc1).then((result) => {
             resolve(console.log('secondary indexes built: ',result))
         }).catch((err) => {
             console.log('error in build query', err)
@@ -145,8 +145,60 @@ function makeVisits(db) {
     }).catch((err) => {
         console.log(err);
     });
-   
 }
+function buildUsersFindIndexes(udb) {
+    let indexesToBuild = [{
+        name: 'users',
+        fields: [
+          'type',
+          'user_name_name',
+          '_id'
+        ]
+      }
+    
+      ]
+      indexesToBuild.forEach(function(index) {
+        db.createIndex({
+          index: {
+            fields: index.fields,
+            name: index.name
+          }
+        });
+      });
+}
+
+function buildPatientsFindIndexes(db) {
+    let indexesToBuild = [{
+      name: 'patients',
+      fields: [
+        'type',
+        'last_name'
+      ]
+    }, {
+      name: 'visits',
+      fields: [
+        '_id',
+        'date',
+        'patient_id'
+      ]
+    }];
+    indexesToBuild.forEach(function(index) {
+      db.createIndex({
+        index: {
+          fields: index.fields,
+          ddoc: index.name,
+          name: index.name
+        }
+      }).then((results) => {
+          console.log('indexesToBuild',results)
+          return "success";
+      }).catch((err) => {
+          console.log('error in idexesToBuild', err)
+      })
+    });
+    
+  }
+
   var sample_visits= [
     {
     _id: '0987fdsa',
@@ -216,5 +268,7 @@ module.exports = {
     remove,
     create_sample_user,
     buildQuery2,
+    buildPatientsFindIndexes,
+    buildUsersFindIndexes
     
   };

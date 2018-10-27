@@ -25,44 +25,54 @@
                     </thead>
 
                     <tbody>
-                        {{#each obj}}
+                        {{#each obj.docs}}
                         <tr>
-                            <td>{{doc.last_name}}</td>
-                            <td>{{doc.first_name}}</td>
-                            <td>{{doc.middle_name}}</td>
-                            <td>{{doc.city}}</td>
-                            <td>{{doc.last_visit}}</td>
-                              <td><a href="/patients/edit/{{doc._id}}" class="btn btn-primary btn-sm">Edit</a></td>
-                            <td><a href='/view/{{doc._id}}' class="btn btn-primary btn-sm">View</a></td>
+                            <td>{{last_name}}</td>
+                            <td>{{first_name}}</td>
+                            <td>{{middle_name}}</td>
+                            <td>{{city}}</td>
+                            <td>{{last_visit}}</td>
+                            <td><a href="/patients/edit/{{_id}}" class="btn btn-primary btn-sm">Edit</a></td>
+                            <td><a href='/view/{{_id}}' class="btn btn-primary btn-sm">View</a></td>
                             <td>
                                 <form ref='uploadForm' id='uploadForm' action="/patients/upload" method='post' encType="multipart/form-data">
-                                    <input type="hidden" name="id" value="{{doc._id}}" />
-                                    <input type="hidden" name="rev" value="{{doc._rev}}" />
-                                    <div class="btn-group" role = "group">
-                                    <input id="fupload" class=" btn-sm" value="browse" type="file" name="fileUpload" />
-                                    <input class="btn btn-outline-primary btn-sm" type='submit' value='Upload!' />
+                                    <input type="hidden" name="id" value="{{_id}}" />
+                                    <input type="hidden" name="rev" value="{{_rev}}" />
+                                    <div class="btn-group" role="group">
+                                        <input id="fupload" class=" btn-sm" value="browse" type="file" name="fileUpload" />
+                                        <input class="btn btn-outline-primary btn-sm" type='submit' value='Upload!' />
                                     </div>
                                 </form>
                             </td>
-                          
-
                             {{/each}}
                     </tbody>
                 </table>
             </div>
+            <div class="container w3-center">
+                <ul class="container pagination pagination-centered">
+                    {{#paginate pagination type="first"}}
+                    <li {{#if disabled}} class="disabled" {{/if}}><a class="page-link" href="?p={{n}}">First</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="previous"}}
+                    <li {{#if disabled}} class="disabled" {{/if}}><a class="page-link" href="?p={{n}}">Prev</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="middle" limit="7"}}
+                    <li {{#if active}} class="active" {{/if}}><a class="page-link" href="?p={{n}}">{{n}}</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="next"}}
+                    <li {{#if disabled}} class="disabled" {{/if}}><a class="page-link" href="?p={{n}}">Next</a></li>
+                    {{/paginate}}
+                    {{#paginate pagination type="last"}}
+                    <li {{#if disabled}} class="disabled" {{/if}}><a class="page-link" href="?p={{n}}">Last</a></li>
+                    {{/paginate}}
+                </ul>
+            </div>
         </div>
     </div>
 
-</body>
-{{!-- <p>No Patients Found</p> --}}
-{{!-- {{/each}}
-{{!-- bootstrap file browser
-<div class="custom-file">
-    <input type="file" class="custom-file-input" id="customFile">
-    <label class="custom-file-label" for="customFile">Choose file</label>
-</div> --}}
 
-{{> footer}}
+
+    {{> footer}}
 
 </body>
 

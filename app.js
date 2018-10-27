@@ -15,6 +15,7 @@ const umodel = require('@models/userModel');
 const index_controller = require('@controllers/index_controller');
 const view_controller = require('@controllers/view_controller');
 const patients_controller = require('@controllers/patients_controller');
+const demo_controller = require('@controllers/demo_controller');
 const settings_controller = require('@controllers/settings_controller');
 const auth_controller = require('@controllers/auth_controller');
 const user_controller = require('@controllers/user_controller');
@@ -50,6 +51,8 @@ app.set("view engine", "hbs");
 
 
 //start routes
+
+
 app.get("/", index_controller.home_page);
 app.post("/login", auth_controller.login);
 
@@ -90,6 +93,7 @@ app.post("/settings/createdb", settings_controller.create_db);
 app.get("/settings/buildQuery", settings_controller.build_index);
 app.get("/settings/replicate_patients", settings_controller.replicate_patients);
 app.get("/settings/replicate_users", settings_controller.replicate_users);
+app.get("/settings/buildPatientsFindIndexes", settings_controller.build_find_indexes);
 
 
 app.post("/users/create", user_controller.create_user);
@@ -105,7 +109,8 @@ app.get("/rx", (req, res) => {
   });
 });
 
-
+app.get("/demo", demo_controller.demo_render);
+app.get("/demo/patients", demo_controller.demo_patients);
 
 const port = 5000;
 

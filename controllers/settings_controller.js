@@ -87,6 +87,16 @@ module.exports.build_index = ((req, res) => {
   res.redirect("/patients");
 });
 
+module.exports.build_find_indexes = ((req, res) => {
+  return new Promise((resolve, reject) => {
+    const result = dbFuncs.buildPatientsFindIndexes(db)
+    console.log('from build_find_indexes', result)
+    (res.redirect("/settings"));
+  })
+    
+  });
+
+
 module.exports.replicate_patients = ((req, res) => {
     db.sync(remoteDB, {
         live: true

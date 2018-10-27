@@ -17,20 +17,58 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 hbs.registerPartials("../views/partials");
 
+//pagination
+// var Handlebars = require('handlebars');
+var paginate = require('handlebars-paginate');
+hbs.registerHelper('paginate', paginate);
+
 // ("use strict");
 
 
-  module.exports.render_patients = (req, res) => {
-    return db
-    .query("index/patients_only", { include_docs: true })
-    .then(function(response) {
+  module.exports.render_patients = (req, res, next) => {
+  //TODO: change per page to parameter passed from template
+  //var perPage = req.params.perPage || 50;
+  //or
+  //var perPage = req.body.perPage;
+  var perPage = 2;
+  var page = req.query.p || 1;
+
+    return db.find({
+      selector: {
+        type: "patient"
+      },
+      use_index: "patients",
+      skip: ((perPage * page) - perPage),
+      limit: perPage
+    }).then((doc) => {
+        console.log(doc.docs.count)
+      count = 10
+      let pages = Math.ceil(count / perPage);
       res.render("patients", {
-        obj: response.rows
-      });
-    })
-    .catch(err => {
-      console.log(err);
+        
+        pagination: {
+          page: page,
+          pageCount: pages
+        },
+          obj: doc,
+          current: page,
+          
+      })
+    }).catch((err) => {
+        console.log('error in demo_patients', err);
     });
+
+    //non-paginated code
+    // return db
+    // .query("index/patients_only", { include_docs: true })
+    // .then(function(response) {
+    //   res.render("patients", {
+    //     obj: response.rows
+    //   });
+    // })
+    // .catch(err => {
+    //   console.log(err);
+    // });
   };
 
 module.exports.render_addPage = (req,res) => {

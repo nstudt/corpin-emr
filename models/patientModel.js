@@ -6,6 +6,7 @@ const PouchDB = require("pouchdb");
 class Vitals {
   constructor (obj) {
     this.added = new Date();
+    this.patient_id = obj.patient_id,
     this.type = "vitals";
     this.height = obj.height;
     this.weight = obj.weight;
