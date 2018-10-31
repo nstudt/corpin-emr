@@ -6,7 +6,8 @@
 /archive
 /patients-mrview*
 /*.pdf
-/puchdb-sample.js
+/pouchdb-sample.js
 /.secret
 /._users
 /patients/*
+/admin/*

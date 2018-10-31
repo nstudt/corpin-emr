@@ -1,5 +1,5 @@
-2018/10/27-06:30:30.174 9eec Recovering log #32
-2018/10/27-06:30:30.174 9eec Level-0 table #34: started
-2018/10/27-06:30:30.320 9eec Level-0 table #34: 254 bytes OK
-2018/10/27-06:30:30.499 9eec Delete type=0 #32
-2018/10/27-06:30:30.499 9eec Delete type=3 #30
+2018/10/31-06:46:31.272 57ec Recovering log #87
+2018/10/31-06:46:31.272 57ec Level-0 table #89: started
+2018/10/31-06:46:31.405 57ec Level-0 table #89: 256 bytes OK
+2018/10/31-06:46:31.498 57ec Delete type=0 #87
+2018/10/31-06:46:31.498 57ec Delete type=3 #85

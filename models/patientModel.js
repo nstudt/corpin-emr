@@ -3,6 +3,25 @@ const PouchDB = require("pouchdb");
 // var db = new PouchDB('patients');
 ("use strict");
 
+ class Prescription {
+   constructor(){
+     if (obj._id) {
+       this._id = obj._id
+     }else{
+      this._id = uuidv4();
+     }
+     this.name = obj.name;
+     this.strength = obj.strength;
+     this.amount = obj.amount;
+     this.route = obj.route;
+     this.frequency = obj.frequency;
+     this.total = obj.total;
+     this.refills = obj.refills;
+     this.patient_id = obj.patient_id;
+     this.phys_id = obj.phys_id;
+    }
+ }
+
 class Vitals {
   constructor (obj) {
     this.added = new Date();
@@ -19,12 +38,12 @@ class Vitals {
 class Visits {
   constructor(obj) {
     this.type = "visit";
-    if (!this._id) {
-      this._id = uuidv4();
-    } else {
-      this._id = obj._id;
+    if (obj._id) {
+      this._id = obj._id
+    }else{
+     this._id = uuidv4();
     }
-    this.date = obj.date
+    this.date = obj.date;
     this.patient_id = obj.patient_id;
     this._rev = obj._rev;
     this._attachments = obj._attachments;
@@ -39,10 +58,10 @@ class Visits {
 
 class Patient {
   constructor(obj) {
-    if (!obj._id) {
-      this._id = uuidv4();
-    } else {
-      this._id = obj._id;
+    if (obj._id) {
+      this._id = obj._id
+    }else{
+     this._id = uuidv4();
     }
     this._attachments = obj._attachments;
     this._rev = obj._rev;
@@ -71,7 +90,8 @@ class Patient {
     this.pulse = obj.pulse;
     this.temp = obj.temp;
     this.age = this.constructor.calculate_age(obj.dob);
-    this.files_meta = obj.files_meta
+    this.files_meta = obj.files_meta;
+    this.pregnant = obj.pregnant;
    
   };
   static calculate_age(strDate) { 

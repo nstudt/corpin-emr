@@ -1,6 +1,9 @@
 const PouchDB = require("pouchdb");
 var pmodel = require("./models/patientModel");
 const bodyParser = require("body-parser");
+var dbname = "patients";
+var udb_name = "userdb";
+var db;
 ("use strict");
 
 // declare views
@@ -28,44 +31,78 @@ var ddoc1 = {
         "patients_only": {
             map: function (doc) {
                 if(doc.type == 'patient'){
-                    emit(doc._id)};
-                 }.toString()
-        },
-        "users_only": {
-            map: function (doc) {
-                if(doc.type == 'user'){
-                    emit(doc._id)};
+                    emit([doc.last_name, doc._id])};
                  }.toString()
         }
     }
 };
-
+function get_dbinfo(dbinfo) {
+    if (!db) { 
+        db = this.prep_db();
+        console.log('from get_dbinfo: created db');
+      }
+return new Promise((resolve, reject) => {
+     db.getIndexes().then((result) => {
+        dbinfo.indexes = result
+    }).then(() => {
+       return  db.info().then((info) => {
+            dbinfo.info = info
+            resolve(info);
+        }).catch((err) => {
+            console.log('error in get_dbinfo', err)
+            reject(err);
+        });
+      });
+});
+    }
+      
 //appends visit _id to patient record
 //error 412 (missing _id), which is obviously there. No idea.
 function addVisitId(db, p_id, v_id, v_date) {
-    
-    return db.query("index/patients_only", {key: p_id, include_docs: true})
-    .then(function(doc) {
-        doc.rows[0].doc.visit_ids.push(v_id)
-        doc.rows[0].doc.last_visit = v_date
-        db.put(doc).then((result) => {
-            console.log(result)
-        }).catch((err) => {
-            console.log('error in addVisitID', err);
+    return new Promise((resolve, reject) => {
+        return db.query("index/patients_only", {key: p_id, include_docs: true})
+        .then(function(doc) {
+            doc.rows[0].doc.visit_ids.push(v_id)
+            doc.rows[0].doc.last_visit = v_date
+            db.put(doc).then((result) => {
+              resolve(console.log(result));
+            }).catch((err) => {
+                console.log('error in addVisitID', err);
+            });
         });
     });
+    
+    
 }
-function buildQuery(db) {
+
+function erase_indexes(db) {
+    try {
+        db.getIndexes().then((result) => {
+            if (indexesResult.length > 0) {
+                console.log('indexesResult', indexesResult)
+                for (var index in indexesResult.indexes - 1){
+                    db.deleteIndex(indexesResult.indexes[(index+1)]);
+                    console.log('index deleted', result);
+                }
+            }  
+        });
+        
+      } catch (err) {
+        console.log('error deleting index', err);
+      }
+
+}
+
+function build_index(db) {
     return new Promise((resolve, reject) => {
         return db.put(ddoc1).then((result) => {
             resolve(console.log('secondary indexes built: ',result))
-        }).catch((err) => {
-            console.log('error in build query', err)
-        });
+            }).catch((err) => {
+                console.log('error in build query', err)
+            });
     });
-    
 }
-function buildQuery2(udb) {
+function build_index2(udb) {
     return new Promise((resolve, reject) => {
         return udb.put(ddoc2).then((result) => {
             resolve(console.log('secondary indexes built: ',result))
@@ -75,48 +112,83 @@ function buildQuery2(udb) {
     });
     
 }
-
+function prep_db() {
+    try {
+        console.log('db obj not exist');
+        var db = new PouchDB(dbname);
+        console.log('db obj created')
+        return db
+    }
+    catch(err){
+        console.log('error during db creation ', err)
+        return false
+    }      
+}
+function prep_udb() {
+    try {
+        console.log('db obj not exist');
+        var udb = new PouchDB(udb_name);
+        console.log('db obj created')
+        return db
+    }
+    catch(err){
+        console.log('error during db creation ', err)
+        return false
+    }      
+}
 //pass the db object and name of view eg: 'encounters/by_type (gets all encounters)'
 function dbQuery(db, q, opts) {
-            return db.query(q, {key: opts, include_docs: true}).then((response) => {
+    return new Promise((resolve, reject) => {
+        return db.query(q, {key: opts, include_docs: true}).then((response) => {
             //handle response
-            console.log('dbQuery response: ',response.rows);
+            resolve(console.log('dbQuery response: ',response.rows));
         }).catch((err) => {
             console.log(`error in dbQuery: ${q} ${err} `)
         });  
+    });
+          
 }
 function makeVisits(db) {
-    db.bulkDocs(sample_visits, () => {})
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log("error makeVisits", err);
-      });
-
+    return new Promise((resolve, reject) => {
+        db.bulkDocs(sample_visits, () => {})
+        .then(result => {
+          resolve(console.log(result));
+        })
+        .catch(err => {
+          console.log("error makeVisits", err);
+        });
+  
+    });
+    
   }
   //abstracted without validation. Ensure correct body is passed in
   function create(db, body){
-      db.put(body)
-      .then((result) => {
-          //display the doc just created
-          db.get(result._id, {include_docs: true})
-          .then((doc) => {
-            console.log(doc.rows)
-          }).catch((err) => {
-              console.log('error in dbFuncs.create', err)
-          });
+      return new Promise((resolve, reject) => {
+        db.put(body)
+        .then((result) => {
+            //display the doc just created
+            db.get(result._id, {include_docs: true})
+            .then((doc) => {
+              console.log(doc.rows)
+            }).catch((err) => {
+                console.log('error in dbFuncs.create', err)
+            });
+        });
       });
+     
   }
 
   function remove(db, body){
-    db.get(body._id).then((doc) => {
-        return db.remove(doc);
-    }).then((result) => {
-        console.log(result)
-    }).catch((err) => {
-        console.log('error diuring delete', err)
-    });
+      return new Promise((resolve, reject) => {
+        db.get(body._id).then((doc) => {
+            return db.remove(doc);
+        }).then((result) => {
+            console.log(result)
+        }).catch((err) => {
+            console.log('error diuring delete', err)
+        });
+      });
+    
 }
 
   function create_sample_user(udb, obj){
@@ -124,11 +196,11 @@ function makeVisits(db) {
         return udb.put(obj)
     .then((result) => {
         console.log('created sample user', result)
-        resolve('success')
-    }).then((resolve) => {
-        console.log(resolve)
+        resolve(result);
     }).catch((err) => {
-        console.log('error in creating sample user', err)
+        console.log('error in creating sample user', err);
+        reject(err);
+        
     });
     });
     
@@ -136,67 +208,36 @@ function makeVisits(db) {
 
   //the calling function needs to be wrapped in a promise
   function update(db, body){
-    return db.get(body._id)
-    .then((doc) => {
-        Object.assign(doc, body)
-        db.put(doc).then((results) =>{
-            console.log(results);
-        })
-    }).catch((err) => {
-        console.log(err);
-    });
-}
-function buildUsersFindIndexes(udb) {
-    let indexesToBuild = [{
-        name: 'users',
-        fields: [
-          'type',
-          'user_name_name',
-          '_id'
-        ]
-      }
-    
-      ]
-      indexesToBuild.forEach(function(index) {
-        db.createIndex({
-          index: {
-            fields: index.fields,
-            name: index.name
-          }
+      return new Promise((resolve, reject) => {
+        return db.get(body._id)
+        .then((doc) => {
+            Object.assign(doc, body)
+            db.put(doc).then((results) =>{
+                resolve(console.log(results));
+            })
+        }).catch((err) => {
+            reject(console.log(err));
         });
       });
 }
 
+//TODO: is this index optimized?
 function buildPatientsFindIndexes(db) {
-    let indexesToBuild = [{
-      name: 'patients',
-      fields: [
-        'type',
-        'last_name'
-      ]
-    }, {
-      name: 'visits',
-      fields: [
-        '_id',
-        'date',
-        'patient_id'
-      ]
-    }];
-    indexesToBuild.forEach(function(index) {
-      db.createIndex({
+   return new Promise((resolve, reject) => {
+    return db.createIndex({
         index: {
-          fields: index.fields,
-          ddoc: index.name,
-          name: index.name
+            name: ['patients'],
+            ddoc: ['patients'],
+            fields: ['last_name']}
         }
-      }).then((results) => {
-          console.log('indexesToBuild',results)
-          return "success";
-      }).catch((err) => {
-          console.log('error in idexesToBuild', err)
-      })
+    ).then((result) =>{
+        console.log(result)
+        resolve(result)
+    }).catch((err) => {
+        console.log(err)
+        reject(err);
     });
-    
+   });
   }
 
   var sample_visits= [
@@ -260,15 +301,18 @@ function buildPatientsFindIndexes(db) {
 module.exports = {
     dbQuery,
     sample_visits,
-    buildQuery,
+    build_index,
     makeVisits,
     addVisitId,
     update,
     create,
     remove,
     create_sample_user,
-    buildQuery2,
+    build_index2,
     buildPatientsFindIndexes,
-    buildUsersFindIndexes
+    prep_db,
+    erase_indexes,
+    prep_udb,
+    get_dbinfo
     
   };

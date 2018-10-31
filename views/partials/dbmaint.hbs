@@ -1,0 +1,138 @@
+<div class="card sameheight-item" data-exclude="xs" id="dashboard-history">
+	<div class="card-header card-header-sm bordered">
+		<div class="header-block">
+			<h3 class="title">Database Matintenance</h3>
+		</div>
+		<ul class="nav nav-tabs pull-right" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" href="#visits" role="tab" data-toggle="tab">Patients</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#downloads" role="tab" data-toggle="tab">Users</a>
+			</li>
+		</ul>
+	</div>
+	<div class="card-block">
+
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active fade show" id="dbmaint">
+				<p>Only Take these actions if you know the consequences.</p>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Wipe Local Data</th>
+							<th>Create DB</th>
+							<th>Sample Data</th>
+							<th>Build Indexes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<form action="#" method="POST">
+									<button type="button" class="btn btn-danger" onclick="confirm_action('/admin/destroy', 'params', 'post')">Wipe</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/createdb" method="POST">
+									<button type="submit" class="btn btn-success">Create</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/sample" method="POST">
+									<button type="submit" class="btn btn-success">Generate</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/build_index" method="GET">
+									<a type="submit" class="btn btn-success">Index</a>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				
+<thead>
+						<tr>
+							<th>Pull Data</th>
+							<th>Sync Patients</th>
+							<th>Sync Users</th>
+							<th>Build Find Index</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<form action="/admin/replicate_from_remote" method="GET">
+									<button type="submit" class="btn btn-success">Submit</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/replicate_patients" method="GET">
+									<button type="submit" class="btn btn-success">Sumit</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/replicate_users" method="GET">
+									<button type="submit" class="btn btn-success">Sumit</button>
+								</form>
+							</td>
+							<td>
+								<form action="/admin/build_find_indexes" method="GET">
+									<a type="submit" class="btn btn-success">Submit</a>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+</table>
+
+
+			<div id="dashboard-visits-chart"></div>
+		</div>
+		<div role="tabpanel" class="tab-pane fade" id="downloads">
+			<p class="title-description">
+				Buttons and results for all db functions
+			</p>
+
+			<div id="dashboard-downloads-chart"></div>
+		</div>
+	</div>
+</div>
+</div>
+
+<script>
+	function confirm_action(path, params, method){
+		var r=confirm("Press a button");
+if (r==true)
+  {
+  postORget(path, params, method);
+  }
+else
+  {
+  console.log('cancel');
+  }
+	}
+
+	function postORget(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>

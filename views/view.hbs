@@ -6,12 +6,12 @@
 
 
 
-<body>
+<body onload="checkAtrributes('{{patient.pregnant}}')">
   {{> header}}
   {{> navbar}}
   {{!-- top container --}}
   <div class="w3-center w3-container w3-padding-small">
-    <h3 class="w3-center">Examination Room - {{patient.last_name}}</h3>
+    <h3 class="w3-center">Examination Room - {{patient.last_name}}   <span id="pregnant" name="pregnant" class="badge badge-warning">Pregnant</span></h3>
     <p><a href="/view/soap/{{patient._id}}" target="iframe_a" > Start Encounter</a></p>
     {{!-- <p><a href="#" id="delDoc" style="visibility: hidden"> <span style="color:blue">delete document</span> </a></p> --}}
    </div>
@@ -21,7 +21,7 @@
       <div class="w3-card w3-container" style="min-height:500px">
 
         <ul class="w3-ul">
-          <li class="w3-blue w3-padding-small">Last Name</li>
+          <li class="w3-blue w3-padding-small">Last Name  </li>
           <li class="w3-padding-small">{{patient.last_name}}</li>
           <li class="w3-blue w3-padding-small">First Name</li>
           <li class="w3-padding-small">{{patient.first_name}}</li>
@@ -72,6 +72,18 @@
           <li class="w3-padding-small">{{patient.pulse}}</li>
           <li class="w3-blue w3-padding-small">Temperature</li>
           <li class="w3-padding-small">{{patient.temp}}</li>
+          <li class="w3-padding-small">{{patient.temp}}</li>
+          <li class="w3-padding-small">
+            
+									<button type="submit" id="rxModal" name="rxModal" class="btn btn-success" data-toggle="modal" data-target="#MyModal" data-backdrop="static">Prescription</button>
+								</li>
+                <li class="w3-padding-small"><form action="/view/lab" method="GET">
+									<button type="submit" class="btn btn-success">Order Lab</button>
+								</form></li>
+                 <li class="w3-padding-small"><form action="/patients/edit/{{patient._id}}" method="GET">
+									<button type="submit" class="btn btn-success">Edit Patient</button>
+								</form></li>
+          
       </div>
     </div>
   </div>
@@ -109,7 +121,31 @@
     }
   </script>
 
+<script>
+    $("#rxModal").click(function(event) {
+    event.preventDefault;
+    $.ajax({
+        type: "GET",
+        url: "/view_rx" // Modify the url according to your application logic
+    }).done(function(yourData) {
+        // Now open the modal! (Assuming you are using bootstrap.js)
+        $("#myModal").modal("show");
+        // If you used 'res.json' then you can use yourData here
 
+    });
+})
+  </script>
+  <script>
+function checkAtrributes(attr){
+  if (attr=="on"){
+    document.getElementById('pregnant').style.display = "inline";
+  }else{
+    document.getElementById('pregnant').style.display = "none";
+  }
+  
+  console.log(attr);
+}
+  </script>
 </body>
 
 </html>

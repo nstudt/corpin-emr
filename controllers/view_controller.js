@@ -34,7 +34,9 @@ module.exports.view_patient = (req, res) => {
         });
     });
   }
-
+module.exports.view_rx = ((req, res) => {
+  res.render('rxModal');
+});
 
 module.exports.post_soap = ((req, res) => {
   let visit = new pmodel.Visits(req.body);

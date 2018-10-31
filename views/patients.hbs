@@ -13,8 +13,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>First Name</th>
                             <th>Last Name</th>
+                            <th>First Name</th>
                             <th>Middle Name</th>
                             <th>City</th>
                             <th>Last Visit</th>
@@ -33,6 +33,7 @@
                             <td>{{city}}</td>
                             <td>{{last_visit}}</td>
                             <td><a href="/patients/edit/{{_id}}" class="btn btn-primary btn-sm">Edit</a></td>
+                            <td><a href="#" class="btn btn-danger btn-sm" onclick="confirm_action('/patients/delete/{{_id}}', 'params', 'post')">Delete</a></td>
                             <td><a href='/view/{{_id}}' class="btn btn-primary btn-sm">View</a></td>
                             <td>
                                 <form ref='uploadForm' id='uploadForm' action="/patients/upload" method='post' encType="multipart/form-data">
@@ -73,7 +74,43 @@
 
 
     {{> footer}}
+<script>
+	function confirm_action(path, params, method){
+		var r=confirm("Confirm Delete Patient");
+if (r==true)
+  {
+  postORget(path, params, method);
+  }
+else
+  {
+  console.log('cancel');
+  }
+	}
 
+	function postORget(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
 </body>
 
 </html>
