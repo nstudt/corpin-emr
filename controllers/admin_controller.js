@@ -57,7 +57,7 @@ module.exports.render_admin = (req, res) => {
         // indexes: dbinfo.indexes.indexes,
         info: info,
         remoteDB: remoteDB,
-        remoteUDB: remoteUDB,
+        // remoteUDB: remoteUDB,
         system: system,
         replication: req.replication
       });
