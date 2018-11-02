@@ -35,9 +35,9 @@ var dbinfo = new helpers.DBINFO();
 ("use strict");
 //todo - move dbname to .config
 // var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
-// var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
-var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
-var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
+var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+// var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
+// var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
 
 
 module.exports.toggle_repl = (req, res) => {
