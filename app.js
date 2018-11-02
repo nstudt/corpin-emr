@@ -4,8 +4,8 @@ const _ = require('underscore');
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
-// const PouchDB = require("pouchdb");
-// PouchDB.plugin(require("pouchdb-find"));
+const PouchDB = require("pouchdb");
+PouchDB.plugin(require("pouchdb-find"));
 const fileUpload = require("express-fileupload");
 const index_controller = require('@controllers/index_controller');
 const view_controller = require('@controllers/view_controller');
@@ -17,6 +17,10 @@ const user_controller = require('@controllers/user_controller');
 const session = require("express-session");
 const app = express();
 const events = require('events').EventEmitter;
+var dbname = "patients";
+var db = new PouchDB(dbname);
+var udb_name = "userdb";
+var udb = new PouchDB(udb_name);
 // const emitter = new events.EventEmitter();
 
 // emitter.on('repl_change', function(status){
