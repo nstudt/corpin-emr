@@ -5,6 +5,7 @@ const express = require("express");
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const app = express();
+const session = require("express-session");
 const dbFuncs = require("@root/dbFuncs");
 const PouchDB = require("pouchdb");
 const helpers = require("@root/helpers");
@@ -15,14 +16,16 @@ var udb_name = "userdb";
 var udb = new PouchDB(udb_name);
 const umodel = require("@models/userModel");
 const pmodel = require("@models/patientModel");
-//DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
-app.use(express.static(__dirname + "../"));
-// app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set("view engine", "hbs");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-hbs.registerPartials("../views/partials");
 
+//DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
+// app.use(express.static(__dirname + "../"));
+// // app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+// app.set("view engine", "hbs");
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+// hbs.registerPartials("../views/partials");
+// app.use(session({secret: 'sss'}));
+var sess;
 
 
 var system = new helpers.local_system();
@@ -36,6 +39,12 @@ var dbinfo = new helpers.DBINFO();
 var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
 var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
 
+
+module.exports.toggle_repl = (req, res) => {
+  console.log('got data from navbar click', req.body)
+  res.send('badge badge-light');
+
+  };
 module.exports.render_admin = (req, res) => {
   if (!dbinfo) {
     dbinfo = new DBINFO();
@@ -45,12 +54,14 @@ module.exports.render_admin = (req, res) => {
   .then((info) => {
     console.log(info)
     res.render("admin", {
-        indexes: dbinfo.indexes.indexes,
-        info: dbinfo.info,
+        // indexes: dbinfo.indexes.indexes,
+        info: info,
         remoteDB: remoteDB,
         remoteUDB: remoteUDB,
-        system: system
+        system: system,
+        replication: req.replication
       });
+      
   });
 }
 
@@ -60,7 +71,7 @@ module.exports.create_db = (req, res) => {
   console.log(`created ${dbname}`);
   udb = new PouchDB(udb_name);
   console.log(`created ${udb_name}`);
-  res.redirect("/");
+  res.redirect("/admin");
 };
 
 module.exports.delete_db = (req, res) => {
@@ -71,7 +82,8 @@ module.exports.delete_db = (req, res) => {
     .then(() => {
       udb.destroy()
         .then(response => {
-          console.log("ydb destroy", response);
+          console.log("db destroy", response);
+          res.redirect('/admin');
         })
         .catch(err => {
           console.log("error during destroy", err);
@@ -90,7 +102,7 @@ module.exports.sample_data = (req, res) => {
     }).then((result) => {
       console.log('result of create_sample_user', result)
       delete suser;
-      res.redirect("/");
+      res.redirect("/admin");
     }).catch((err) => {
 console.log('error in sample_data', err)
     });
@@ -119,7 +131,8 @@ module.exports.build_index = (req, res) => {
         console.log("usb data: ", docs.rows);
       }).catch(err => {
         console.log("error in setting/buildQuery", err);
-    })
+    });
+    res.redirect('/admin');
     });
   
 };
@@ -128,17 +141,14 @@ module.exports.build_find_indexes = (req, res) => {
   if (!db) {
     db = dbFuncs.prep_db();
   }
-  dbFuncs.buildPatientsFindIndexes(db)
+  return dbFuncs.buildPatientsFindIndexes(db)
   .then((result) => {
     console.log("from build_find_indexes", result);
     res.redirect("/admin");
   }).catch((err) => {
     console.log('from build_find_indexes',err);
   });
-  
-  
-  //TODO: get records count and display to navbar
-};
+  };
 module.exports.replicate_from_remote = (req, res) => {
   if (!db) {
     db = dbFuncs.prep_db();
@@ -175,6 +185,44 @@ module.exports.replicate_from_remote = (req, res) => {
   }, 2000);
 };
 
+module.exports.replicate_to_remote = (req, res) => {
+  if (!db) {
+    db = dbFuncs.prep_db();
+    console.log("new db obj created");
+  }
+  console.log("starting replication");
+  app.set('replication','on');
+  db.replicate
+    .to(remoteDB, {
+      live: true,
+      retry: true,
+      back_off_function: function(delay) {
+        console.log("backoff delay: ", delay);
+        if (delay === 0) {
+          return 1000;
+        }
+        return delay * 3;
+      },
+      timeout: 5000,
+      batch_size: 50
+    })
+    .on("complete", result => {
+      console.log(" pull relication result", result);
+      app.set('replication','on');
+    })
+    .on("denied", err => {
+      console.log("deny happened during pull of patients from remote: ", err);
+      app.set('replication','error');
+    })
+    .on("error", err => {
+      console.log("error during pull replcation", err);
+      app.set('replication','error');
+    });
+  setTimeout(function() {
+    res.redirect("/patients");
+  }, 2000);
+};
+
 module.exports.replicate_patients = (req, res) => {
   if (!db) {
     db = dbFuncs.prep_db();
@@ -182,7 +230,7 @@ module.exports.replicate_patients = (req, res) => {
   }
 
   db.sync(remoteDB, {
-    live: true,
+    live: false,
     retry: true,
       back_off_function: function(delay) {
         console.log("backoff delay: ", delay);
@@ -198,16 +246,19 @@ module.exports.replicate_patients = (req, res) => {
       console.log("replication triggered", change);
     })
     .on("error", err => {
+      req.replication = "error";
       console.log("error in replication to remoteDB", err);
     })
     .on("active", () => {
       console.log("replication resumed");
+      req.replication = "on";
     })
     .on("paused", () => {
       console.log("replication paused");
     })
     .on("denied", err => {
       console.log("remote server denied replicaiton", err);
+      req.replication = "error";
     })
     .on("complete", result => {
       console.log("two-way replication completed", result);

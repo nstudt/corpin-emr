@@ -1,3 +1,5 @@
+
+
 <nav class="navbar navbar-expand-sm bg-primary text-white  mb-3">
     <div class="continer"></div>
     <a class="navbar-brand" href="/">Corpin EMR</a>
@@ -28,50 +30,20 @@
                 <a class="nav-link w3-large" href="/icd10">ICD-10</a>
             </li>
 
-            <li class="nav-item dropdown w3-right">
-                <a href="/admin" class="nav-link w3-large " data-toggle="dropdown" id="navBarDropdownMenuLink">Admin</a>
-                <div class="dropdown-menu">
-                    <a href="/admin" class="dropdown-item w3-large"></a>
-                    {{!-- <form action="/admin/destroy" method="POST">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Wipe Data</a>
-                    </form> --}}
-                    {{!-- <a href="/admin/createdb" class="dropdown-item w3-large"></a>
-                    <form action="/admin/createdb" method="POST">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">createdb</a>
-                    </form>
-                    <form action="/admin/sample" method="POST">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Generate Sample
-                            Data</a>
-                    </form>
-                    <form action="/admin/buildQuery" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Build Index</a>
-                    </form> --}}
-                    <form action="/admin/replicate_patients" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Replicate
-                            Patients</a>
-                    </form>
-                    {{!-- <form action="/admin/replicate_users" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Replicate Users</a>
-                    </form>
-                    <form action="/users" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Users</a>
-                    </form>
-                    <form action="/admin/buildPatientsFindIndexes" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Build Patients
-                            Find Index</a>
-                    </form>
-                    <form action="/admin/replicate_from_remote" method="GET">
-                        <a href="#" class="dropdown-item w3-large" onclick="this.parentNode.submit()">Pull Patients
-                            from Remote</a>
-                    </form> --}}
-
-                </div>
+            <li class="nav-item w3-right">
+                <a href=# class="nav-link w3-large">Admin</a>
+               </li> 
+               <li class="nav-item w3-right">
+                <a href="/admin/replicate_to_remote" class="nav-link w3-large">Push Records</a>
+               </li>
+     </div>
+     
             </li>
-            <li class="nav-item">
-                <a id="repl_badge" class="nav-link w3-large" href="/admin"><span class="badge badge-success">Replication</span></a>
-            </li>
+            {{!-- <li class="nav-item">
+                <a  id="atag" class="nav-link w3-large" href="#"><span id="repl_badge" class="badge badge-light" >Replication</span></a>
+            </li> --}}
              <li class="nav-item">
-                <a id="conn_badge" class="nav-link w3-large" href="/admin"><span class="badge badge-success">Connection</span></a>
+                <a  class="nav-link w3-large" href="/admin"><span id="conn_badge" class="badge badge-success">Connection</span></a>
             </li>
 
 
@@ -85,3 +57,36 @@
     </form>
 </nav>
 </div>
+
+<script>
+$( document ).ready(function() {
+    console.log('document loaded');
+    x = '{{replication}}';
+    console.log(x)
+
+    switch(x){
+        case "off":
+            document.getElementById("repl_badge").className ="badge badge-light";
+            break;
+        case "on":
+            document.getElementById("repl_badge").className ="badge badge-success";
+            break;
+        case "error":
+            document.getElementById("repl_badge").className ="badge badge-danger";
+            break;
+    }
+});
+  </script>
+  <script>
+      //toggle replication state.
+      var repl_state = $('#repl_badge').class;
+      $("#atag").click(function(){
+          $.post("/admin/toggle_repl", {state: repl_state}, function(data, status){
+              console.log(data);
+              console.log(status);
+              $('#repl_badge').removeClass();
+              $('#repl_badge').addClass(data);
+              
+          });
+      });
+  </script>

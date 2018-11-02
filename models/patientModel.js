@@ -92,6 +92,8 @@ class Patient {
     this.age = this.constructor.calculate_age(obj.dob);
     this.files_meta = obj.files_meta;
     this.pregnant = obj.pregnant;
+    this.added = obj.added;
+    this.modified = obj.modified;
    
   };
   static calculate_age(strDate) { 

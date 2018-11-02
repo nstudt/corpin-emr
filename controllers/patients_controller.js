@@ -16,6 +16,7 @@ app.set("view engine", "hbs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 hbs.registerPartials("../views/partials");
+const helpers = require("@root/helpers");
 
 
 //pagination
@@ -34,10 +35,16 @@ module.exports.render_patients = (req, res, next) => {
     db = dbFuncs.prep_db();
     console.log("created db object");
   }
- 
-  var perPage = 4;
+  var dbinfo = new helpers.DBINFO();
+  var count = 0;
+  var perPage = 500;
   var page = req.query.p || 1;
-  return db.find({
+
+return dbFuncs.get_dbinfo()
+.then((result) => {
+  count = result.doc_count
+  if (count < 500){perPage = count};
+return db.find({
     selector: {
       $and: [
         {last_name: { '$gt': 1}},
@@ -45,37 +52,38 @@ module.exports.render_patients = (req, res, next) => {
     },
     use_index: ['patients'],
     sort: [{'last_name': 'asc'}],
-    skip: ((perPage * page) - page),
+    skip: ((perPage * page) - perPage),
     limit: perPage
- 
+
   }).then((docs) => {
-    // console.log(docs)
-    count = docs.docs.length;
-    if (count < 500) perPage = count;
     let pages = Math.ceil(count / perPage);
     res.render("patients", {
       pagination: {
-        page: page,
-        pageCount: pages
+        currentpage: page,
+        page: pages
       },
         obj: docs,
         current: page,
+        replication: req.replication
     });
   }).catch((err) => {
       console.log('error in patients_controller', err);
   });
+});
 };
 
+
 module.exports.render_addPage = (req, res) => {
-  res.render("add");
+  res.render("add", {replication: req.replication});
 };
 
 //TODO: refactor
 module.exports.add_patient = (req, res) => {
   var newPatient = new pmodel.Patient(req.body);
-  db.put(newPatient)
+  newPatient.added = new Date();
+  return db.put(newPatient)
     .then(result => {
-      console.log(result);
+      console.log('patient added' ,result);
       res.redirect("/patients");
     })
     .catch(err => {
@@ -88,7 +96,9 @@ module.exports.get_edit_patient = (req, res) => {
     .then(patient => {
       //   console.log(patient);
       res.render("edit", {
-        patient: patient
+        patient: patient,
+        pregnant: patient.pregnant,
+        replication: req.replication
       });
     })
     .catch(function(err) {
@@ -97,30 +107,36 @@ module.exports.get_edit_patient = (req, res) => {
 };
 
 module.exports.post_edit_patient = (req, res) => {
-    dbFuncs.update(db, req.body, () => {})
+  doc = req.body;
+  doc.modified = new Date()
+    dbFuncs.update(db, doc, () => {})
       .then(() => {
         res.redirect("/patients");
       })
       .catch(() => {});
     }
 
-//TODO: refactor. move delete to dbFuncs
 module.exports.delete_patient = (req, res) => {
   if (!db) {
     db = dbFuncs.prep_db();
     console.log("db created");
   }
-  return new Promise((resolve, reject) => {
-    return db.get(req.params.id).then(doc => {
-      return db.remove(doc).then(response => {
-          console.log("user removed ", response);
-        resolve(res.redirect("/patients"))
-        }).catch(err => {
-          reject(console.log("error in delete_patient", err));
-        });
+    let _id = req.params.id;
+    return dbFuncs.remove(db, _id).then((result) => {
+      console.log(result)
+      res.redirect("/patients")
+    }).catch((err) => {
+      console.log('error in delete_patient', err);
     });
-  });
-  
+    // return db.get(req.params.id).then(doc => {
+    //   return db.remove(doc).then(response => {
+    //       console.log("user removed ", response);
+    //     resolve(res.redirect("/patients"))
+    //     }).catch(err => {
+    //       console.log("error in delete_patient", err)
+    //       reject(err);
+    //     });
+    // });
 };
 //TODO: refactor
 module.exports.file_upload = (req, res) => {
