@@ -32,12 +32,17 @@ app.use(fileUpload({ preserveExtension: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// app.set('replication', 'off');
+app.set('replication', 'off');
 
-// app.use(function(req, res, next) {
-//   console.log('current replication state is ', app.get('replication'))
-//   next();
-// })
+// app.use('/admin/toggle_repl', function(req, res, next) {
+//   try{
+//     app.set('replication', 'on');
+//   }
+//   catch(err) {
+//     console.log(err)
+//   }
+//    next();
+// });
 
 //DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
 app.use(express.static(__dirname));
@@ -71,7 +76,7 @@ app.post("/patients/delete/:id", patients_controller.delete_patient);
 app.get("/view/:id", view_controller.view_patient);
 app.get("/view/soap/:id", view_controller.render_soap);
 app.post("/view/soap/:id", view_controller.post_soap);
-app.get("/view_rx", view_controller.view_rx);
+app.post("/view/rx", view_controller.view_rx);
 
 app.get("/rxnorm", (req, res) => {
   res.render("rxnorm");
@@ -80,7 +85,7 @@ app.get("/rxnorm", (req, res) => {
 app.get("/icd10", (req, res) => {
   res.render("icd10");
 });
-app.post("/admin/toggle_repl", admin_controller.toggle_repl);
+// app.get("/admin/toggle_repl", admin_controller.test);
 app.get("/admin", admin_controller.render_admin);
 app.post("/admin/destroy", admin_controller.delete_db);
 app.post("/admin/sample", admin_controller.sample_data);

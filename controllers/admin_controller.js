@@ -35,16 +35,16 @@ var dbinfo = new helpers.DBINFO();
 ("use strict");
 //todo - move dbname to .config
 // var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
-var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
-// var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
+// var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
 // var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
 
 
 module.exports.toggle_repl = (req, res) => {
-  console.log('got data from navbar click', req.body)
-  res.send('badge badge-light');
-
+  repl_state = req.app.get('replication')
+  res.send(reapl_sate);
   };
+
 module.exports.render_admin = (req, res) => {
   if (!dbinfo) {
     dbinfo = new DBINFO();
@@ -192,6 +192,7 @@ module.exports.replicate_to_remote = (req, res) => {
   }
   console.log("starting replication");
   app.set('replication','on');
+  console.log(app.get('replication'));
   db.replicate
     .to(remoteDB, {
       live: true,

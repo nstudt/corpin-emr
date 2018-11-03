@@ -50,7 +50,7 @@ function get_dbinfo() {
         resolve(result)
     }).catch((err) => {
         console.log(err);
-        reject(err)
+        reject(err);
     });
 });
 }

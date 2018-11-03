@@ -6,6 +6,6 @@ const app = express();
 
 exports.home_page = ((req, res) => {
   res.render("index", {
-    replication: req.replication
+    replication: req.app.replication
   });
 });

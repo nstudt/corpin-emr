@@ -24,6 +24,7 @@ module.exports.view_patient = (req, res) => {
       return db
         .query("index/visits", { key: patient._id, include_docs: true })
         .then(visits => {
+          req.app.patient = patient;
           res.render("view", {
             patient: patient,
             visits: visits.rows
@@ -35,8 +36,13 @@ module.exports.view_patient = (req, res) => {
     });
   }
 module.exports.view_rx = ((req, res) => {
-  res.render('rxModal');
-});
+  console.log(req.body._id)
+  res.render('rxModal', {
+    patient: req.app.patient
+  });
+  });
+  
+
 
 module.exports.post_soap = ((req, res) => {
   let visit = new pmodel.Visits(req.body);
