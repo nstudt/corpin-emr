@@ -36,7 +36,7 @@ module.exports.view_patient = (req, res) => {
     });
   }
 module.exports.view_rx = ((req, res) => {
-  console.log(req.body._id)
+  //console.log(req.body._id)
   res.render('rxModal', {
     patient: req.app.patient
   });
