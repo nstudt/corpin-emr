@@ -39,6 +39,7 @@ var ddoc1 = {
     }
   }
 };
+
 function get_dbinfo() {
   if (!db) {
     db = this.prep_db();
@@ -100,6 +101,7 @@ function build_index(db) {
       })
       .catch(err => {
         console.log("error in build query", err);
+        reject(err);
       });
   });
 }
@@ -112,13 +114,14 @@ function build_index2(udb) {
       })
       .catch(err => {
         console.log("error in build query", err);
+        reject(err);
       });
   });
 }
 function prep_db() {
   try {
     console.log("db obj not exist");
-    var db = new PouchDB(dbname);
+    db = new PouchDB(dbname);
     console.log("db obj created");
     return db;
   } catch (err) {
@@ -131,7 +134,7 @@ function prep_udb() {
     console.log("db obj not exist");
     var udb = new PouchDB(udb_name);
     console.log("db obj created");
-    return db;
+    return udb;
   } catch (err) {
     console.log("error during db creation ", err);
     return false;
@@ -143,11 +146,11 @@ function dbQuery(db, q, opts) {
     return db
       .query(q, { key: opts, include_docs: true })
       .then(response => {
-        //handle response
         resolve(console.log("dbQuery response: ", response.rows));
       })
       .catch(err => {
         console.log(`error in dbQuery: ${q} ${err} `);
+        reject(err);
       });
   });
 }
@@ -155,10 +158,11 @@ function makeVisits(db) {
   return new Promise((resolve, reject) => {
     db.bulkDocs(sample_visits, () => {})
       .then(result => {
-        resolve(console.log(result));
+        resolve(result);
       })
       .catch(err => {
         console.log("error makeVisits", err);
+        reject(err);
       });
   });
 }

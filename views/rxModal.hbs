@@ -1,9 +1,21 @@
+<link rel="stylesheet" href="/assets/css/bootstrap.css" media="print" charset="utf-8">
+<link rel="stylesheet" href="/assets/css/w3.css" media="print" charset="utf-8">
+
+
+<style type="text/css">
+  @media print {
+    .noprint {
+      display: none;
+    }
+  }
+</style>
+
 <div id="myModal">
-  <div class="modal-dialog " style="width: 300px;height: 750px; padding: 0px margin: 0px;">
+  <div class="modal-dialog printMe" style="width: 300px;height: 750px; padding: 0px;">
     <div class="modal-content">
       <div class="container" style="padding: 0px margin: 0px;">
         <form>
-          <div class="form-row" style="width: 290px; padding: 2px;height: 100px;">
+          <div class="form-row w3-margin-top" style="width: 290px; margin: 0px; padding: 2px;height: 100px;">
             <div class="col" style="width: 80px;height: 90px;"><img class="img" src="/assets/images/rx-80x.jpg"></div>
             <div class="col" style="width: 210px;height: 90px;">
               <ul class="list-unstyled">
@@ -18,7 +30,7 @@
           <div class="form-row" style="width: 290px;padding: 2px;height: 120px;">
             <div class="col" style="width: 280px;height: 80px;">
 
-              <h4 style="background-color: #f7f3f3;padding: 2px;font-family: Oswald, sans-serif;width: 270px;">Prescription</h4>
+              <h4 style="background-color: #f7f3f3;padding: 2px;font-family: Oswald, sans-serif;width: 260px;">Prescription</h4>
 
               <div class="form-group d-inline-block" style="width: 150px;padding: 2px;"><label for="medication" style="font-size: 12px;">Medication</label><input
                   class="form-control" type="text" name="medication" required="" placeholder="medication" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;"></div>
@@ -39,7 +51,7 @@
           </div>
           <div class="form-row" style="width: 290px;padding: 2px;">
             <div class="col" style="width: 280px;">
-              <div class="form-group d-inline-block" style="width: 270px;"><label for="dispense" style="font-size: 12px;">Dispense</label><input
+              <div class="form-group d-inline-block" style="width: 260px;"><label for="dispense" style="font-size: 12px;">Dispense</label><input
                   class="form-control" type="text" name="dispense" required="" placeholder="dispense #30 (thirty)"
                   style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;"></div>
             </div>
@@ -47,29 +59,55 @@
           <div class="form-row" style="width: 290px;padding: 2px;">
             <div class="col" style="width: 280px;">
               <div class="form-group d-inline" style="width: 270px;">
-                <label class="float-left" for="refills" style="font-size: 12px;height: 40px;padding: 2px;">Refills:</label>
-                <input class="form-control" type="text" name="dispense" required="" placeholder="0" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;width: 50px;height: 40px;"></div>
+                <label class="float-left" for="refills" style="font-size: 12px;height: 20px;padding: 2px;">Refills:</label>
+                <input class="form-control" type="text" name="dispense" required="" placeholder="0" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;width: 50px;height: 20px;"></div>
             </div>
           </div>
           <div class="form-row" style="width: 290px;padding: 2px;height: 80px;">
             <div class="col" style="width: 280px;">
               <div class="form-group d-inline-block" style="width: 215px;margin: 0px;">
                 <label for="signature" style="font-size: 12px;height: 18px;padding: 2px;">Signature:</label>
-              <input class="form-control" type="text" name="signature" required="" placeholder="Dr Chloe Digal-Corpin" style="font-size: 16px;font-family: 'Source Sans Pro', sans-serif;padding: 2px;width: 210px;height: 40px;"></div>
+                <input class="form-control" type="text" name="signature" required="" placeholder="Dr Chloe Digal-Corpin"
+                  style="font-size: 16px;font-family: 'Source Sans Pro', sans-serif;padding: 2px;width: 210px;height: 40px;"></div>
               <div class="form-group d-inline-block" style="width: 49px;margin: 0px;"><label for="date" style="font-size: 12px;height: 18px;padding: 2px;width: 50px;">Date:</label><input
                   class="form-control" type="date" name="date"></div>
             </div>
 
           </div>
-           </div>
-          <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-        </form>
       </div>
 
-   
+      <div class="modal-footer noprint">
+        <button type="button" class="btn btn-primary">Save</button>
+        <button id="saveAndPrint" type="button" class="btn btn-primary">Save and Print</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
   </div>
 </div>
 </div>
+<script>
+  jQuery.fn.extend({
+	printElem: function() {
+		var cloned = this.clone();
+    var printSection = $('.printSection');
+    if (printSection.length == 0) {
+    	printSection = $('<div id="printSection"></div>')
+    	$('body').append(printSection);
+    }
+    printSection.append(cloned);
+    var toggleBody = $('body *:visible');
+    toggleBody.hide();
+    $('#printSection, #printSection *').show();
+    window.print();
+    printSection.remove();
+    toggleBody.show();
+	}
+});
+
+$(document).ready(function(){
+	$(document).on('click', '#saveAndPrint', function(){
+  	$('.printMe').printElem();
+  });
+});
+</script>

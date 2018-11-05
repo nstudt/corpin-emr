@@ -10,30 +10,19 @@ const dbFuncs = require("@root/dbFuncs");
 const PouchDB = require("pouchdb");
 const helpers = require("@root/helpers");
 PouchDB.plugin(require("pouchdb-find"));
-var dbname = "patients";
+const dbname = "patients";
 var db = new PouchDB(dbname);
-var udb_name = "userdb";
+const udb_name = "userdb";
 var udb = new PouchDB(udb_name);
 const umodel = require("@models/userModel");
 const pmodel = require("@models/patientModel");
-
-//DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
-// app.use(express.static(__dirname + "../"));
-// // app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-// app.set("view engine", "hbs");
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
-// hbs.registerPartials("../views/partials");
-// app.use(session({secret: 'sss'}));
-var sess;
-
+const batch_size = 100;    // replication
+const timeout = 5000; //replication
 
 var system = new helpers.local_system();
-
 var dbinfo = new helpers.DBINFO();
 
 ("use strict");
-//todo - move dbname to .config
 // var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
 // var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
 var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
@@ -75,18 +64,19 @@ module.exports.create_db = (req, res) => {
 };
 
 module.exports.delete_db = (req, res) => {
-  db.destroy()
+  return db.destroy()
     .then(response => {
       console.log("db.destroy", response);
     })
     .then(() => {
-      udb.destroy()
+      return udb.destroy()
         .then(response => {
           console.log("db destroy", response);
           res.redirect('/admin');
         })
         .catch(err => {
           console.log("error during destroy", err);
+          res.redirect('/admin');
         });
     });
 };
@@ -132,10 +122,9 @@ module.exports.build_index = (req, res) => {
       }).catch(err => {
         console.log("error in setting/buildQuery", err);
     });
-    res.redirect('/admin');
     });
+  }
   
-};
 
 module.exports.build_find_indexes = (req, res) => {
   if (!db) {
@@ -149,6 +138,7 @@ module.exports.build_find_indexes = (req, res) => {
     console.log('from build_find_indexes',err);
   });
   };
+
 module.exports.replicate_from_remote = (req, res) => {
   if (!db) {
     db = dbFuncs.prep_db();
@@ -157,7 +147,7 @@ module.exports.replicate_from_remote = (req, res) => {
   console.log("starting replication");
   db.replicate
     .from(remoteDB, {
-      live: true,
+      live: false,
       retry: true,
       back_off_function: function(delay) {
         console.log("backoff delay: ", delay);
@@ -166,12 +156,11 @@ module.exports.replicate_from_remote = (req, res) => {
         }
         return delay * 3;
       },
-      timeout: 5000,
-      batch_size: 50
+      timeout: timeout,
+      batch_size: batch_size,
     })
     .on("complete", result => {
       console.log(" pull relication result", result);
-      sync.cancel();
       console.log("stopped replication after completion");
     })
     .on("denied", err => {
@@ -204,20 +193,20 @@ module.exports.replicate_to_remote = (req, res) => {
         }
         return delay * 3;
       },
-      timeout: 5000,
-      batch_size: 50
+      timeout: timeout,
+      batch_size: batch_size
     })
     .on("complete", result => {
       console.log(" pull relication result", result);
-      app.set('replication','on');
+      req.app.set('replication','on');
     })
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);
-      app.set('replication','error');
+      req.app.set('replication','error');
     })
     .on("error", err => {
       console.log("error during pull replcation", err);
-      app.set('replication','error');
+      req.app.set('replication','error');
     });
   setTimeout(function() {
     res.redirect("/patients");
@@ -229,9 +218,9 @@ module.exports.replicate_patients = (req, res) => {
     db = dbFuncs.prep_db();
     console.log();
   }
-
+  //sync is used for production
   db.sync(remoteDB, {
-    live: false,
+    live: true,
     retry: true,
       back_off_function: function(delay) {
         console.log("backoff delay: ", delay);
@@ -240,39 +229,31 @@ module.exports.replicate_patients = (req, res) => {
         }
         return delay * 3;
       },
-      timeout: 5000,
-      batch_size: 50
+      timeout: timeout,
+      batch_size: batch_size
   })
-    .on("change", change => {
-      console.log("replication triggered", change);
+    .on("change", info => {
+      console.log('Replication Progress', helpers.getProgress(info.pending, batch_size));
+      console.log("replication triggered", info);
     })
     .on("error", err => {
-      req.replication = "error";
+      req.app.replication = "error";
       console.log("error in replication to remoteDB", err);
     })
-    .on("active", () => {
-      console.log("replication resumed");
-      req.replication = "on";
+    .on("active", info => {
+      console.log("replication resumed", info);
+      req.app.replication = "on";
     })
-    .on("paused", () => {
-      console.log("replication paused");
+    .on("paused", info => {
+      console.log("replication paused", info);
     })
     .on("denied", err => {
       console.log("remote server denied replicaiton", err);
-      req.replication = "error";
+      req.app.replication = "error";
     })
     .on("complete", result => {
       console.log("two-way replication completed", result);
     });
-  var ProgressBar = require("progress");
-  var bar = new ProgressBar(":bar", { total: 20 });
-  var timer = setInterval(function() {
-    bar.tick();
-    if (bar.complete) {
-      console.log("\ncomplete\n");
-      clearInterval(timer);
-    }
-  }, 100);
   setTimeout(function() {
     res.redirect("/patients");
   }, 1000);
