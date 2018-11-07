@@ -289,7 +289,7 @@ var docs = [
 
 function samplePatients(db) {
   console.log("in sampleData");
-  db.bulkDocs(docs, () => {})
+  return db.bulkDocs(docs, () => {})
     .then(result => {
       console.log(result);
     })
@@ -297,6 +297,7 @@ function samplePatients(db) {
       console.log("error creating bulkDocs", err);
     });
 }
+
 module.exports = {
   Patient,
   samplePatients,

@@ -6,12 +6,11 @@ const app = express();
 const dbFuncs = require("@root/dbFuncs");
 const PouchDB = require("pouchdb");
 PouchDB.plugin(require("pouchdb-find"));
-var dbname = "patients";
-var db = new PouchDB(dbname);
+// var dbname = "patients";
+// var db = new PouchDB(dbname);
 const pmodel = require("@models/patientModel");
 //DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
 app.use(express.static(__dirname + "../"));
-// app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set("view engine", "hbs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -20,7 +19,6 @@ const helpers = require("@root/helpers");
 
 
 //pagination
-// var Handlebars = require('handlebars');
 var paginate = require("handlebars-paginate");
 hbs.registerHelper("paginate", paginate);
 
@@ -31,20 +29,17 @@ module.exports.render_patients = (req, res, next) => {
   //var perPage = req.params.perPage || 50;
   //or
   //var perPage = req.body.perPage;
-  if (!db) {
-    db = dbFuncs.prep_db();
-    console.log("created db object");
-  }
-  var dbinfo = new helpers.DBINFO();
+  var db = req.app.db;
+  var dbinfo = req.app.dbinfo;
   var count = 0;
-  var perPage = 500;
+  var perPage = 100;
   var page = req.query.p || 1;
 
-return dbFuncs.get_dbinfo()
-.then((result) => {
+  return dbFuncs.get_dbinfo(db)
+  .then((result) => {
   count = result.doc_count
   if (count < 500){perPage = count};
-return db.find({
+  return db.find({
     selector: {
       $and: [
         {last_name: { '$gt': 1}},
@@ -59,12 +54,12 @@ return db.find({
     let pages = Math.ceil(count / perPage);
     res.render("patients", {
       pagination: {
-        currentpage: page,
-        page: pages
+        page: page,
+        pageCount: pages
       },
         obj: docs,
-        current: page,
-        replication: req.replication
+        // current: page,
+        // replication: req.app.replication
     });
   }).catch((err) => {
       console.log('error in patients_controller', err);
@@ -74,7 +69,7 @@ return db.find({
 
 
 module.exports.render_addPage = (req, res) => {
-  res.render("add", {replication: req.replication});
+  res.render("add", {replication: req.app.replication});
 };
 
 //TODO: refactor
@@ -92,9 +87,8 @@ module.exports.add_patient = (req, res) => {
 };
 //TODO: refactor
 module.exports.get_edit_patient = (req, res) => {
-  db.get(req.params.id)
+  return dbFuncs.get_one(req.app.db, req.params.id)
     .then(patient => {
-      //   console.log(patient);
       res.render("edit", {
         patient: patient,
         pregnant: patient.pregnant,
@@ -109,36 +103,26 @@ module.exports.get_edit_patient = (req, res) => {
 module.exports.post_edit_patient = (req, res) => {
   doc = req.body;
   doc.modified = new Date()
-    dbFuncs.update(db, doc, () => {})
+    dbFuncs.update(req.app.db, doc, () => {})
       .then(() => {
         res.redirect("/patients");
       })
       .catch(() => {});
     }
 
+    //TODO: add deleted flash message
 module.exports.delete_patient = (req, res) => {
-  if (!db) {
-    db = dbFuncs.prep_db();
-    console.log("db created");
-  }
+ 
     let _id = req.params.id;
-    return dbFuncs.remove(db, _id).then((result) => {
+    return dbFuncs.remove(req.app.db, _id).then((result) => {
       console.log(result)
       res.redirect("/patients")
     }).catch((err) => {
       console.log('error in delete_patient', err);
     });
-    // return db.get(req.params.id).then(doc => {
-    //   return db.remove(doc).then(response => {
-    //       console.log("user removed ", response);
-    //     resolve(res.redirect("/patients"))
-    //     }).catch(err => {
-    //       console.log("error in delete_patient", err)
-    //       reject(err);
-    //     });
-    // });
+  
 };
-//TODO: refactor
+//TODO: add upload success flash message
 module.exports.file_upload = (req, res) => {
   if (!req.files) return res.status(400).send("No files were uploaded.");
   let fileName = req.files.fileUpload;
@@ -146,16 +130,12 @@ module.exports.file_upload = (req, res) => {
   type = fileName.mimetype;
   let _id = req.body.id;
   let _rev = req.body.rev;
-  //don't need to save the file to disk, but keep this code in case we move to replcated files
-  // fileName.mv(__dirname + "/" + fName, function(err) {
-  //   if (err) return res.status(500).send(err);
-  // });
-  //save the file to the patient record
-  db.putAttachment(_id.toString(), fName, _rev.toString(), fileName.data, type)
+  dbFuncs.put_attachment(req.app.db,_id.toString(), fName, _rev.toString(), fileName.data, type)
     .then(result => {
+      console.log(result)
       res.redirect("/patients");
     })
     .catch(err => {
-      console.log(err);
+      console.log('error during file upload', err);
     });
 };

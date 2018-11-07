@@ -7,15 +7,9 @@ var pendingMax = 0;
 
 function getProgress(pending, batch_size) {
   var progress;
-  pendingMax = pendingMax < pending ? pending + batch_size : pendingMax;  // first time capture
-  if (pendingMax > 0) {
-    progress = 1 - pending/pendingMax;
-    if (pending === 0) {
-      pendingMax = 0;    // reset for live/next replication
-    }
-  } else {
-    progress = 1;  // 100%
-  }
+  console.log(pending);
+    progress = pending;
+ 
   return progress;
 }
 

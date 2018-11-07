@@ -1,8 +1,10 @@
 const PouchDB = require("pouchdb");
+const express = require("express");
+const app = express();
 var pmodel = require("./models/patientModel");
 const bodyParser = require("body-parser");
-var dbname = "patients";
-var udb_name = "userdb";
+var dbname = app.get('dbname');
+var udb_name = app.get('userdb');
 var db;
 ("use strict");
 
@@ -40,11 +42,7 @@ var ddoc1 = {
   }
 };
 
-function get_dbinfo() {
-  if (!db) {
-    db = this.prep_db();
-    console.log("from get_dbinfo: created db");
-  }
+function get_dbinfo(db) {
   return new Promise((resolve, reject) => {
     return db.info()
     .then((result) => {
@@ -65,12 +63,13 @@ function addVisitId(db, p_id, v_id, v_date) {
       .then(function(doc) {
         doc.rows[0].doc.visit_ids.push(v_id);
         doc.rows[0].doc.last_visit = v_date;
-        db.put(doc)
+        return db.put(doc)
           .then(result => {
             resolve(console.log(result));
           })
           .catch(err => {
             console.log("error in addVisitID", err);
+            reject(err);
           });
       });
   });
@@ -97,46 +96,48 @@ function build_index(db) {
     return db
       .put(ddoc1)
       .then(result => {
-        resolve(console.log("secondary indexes built: ", result));
+        resolve(result);
       })
       .catch(err => {
-        console.log("error in build query", err);
+        console.log("error in db build query", err);
         reject(err);
       });
   });
 }
+
 function build_index2(udb) {
   return new Promise((resolve, reject) => {
     return udb
       .put(ddoc2)
       .then(result => {
-        resolve(console.log("secondary indexes built: ", result));
+        resolve(result);
       })
       .catch(err => {
-        console.log("error in build query", err);
+        console.log("error in udb build query", err);
         reject(err);
       });
   });
 }
-function prep_db() {
+function prep_db(db, dbn) {
   try {
     console.log("db obj not exist");
-    db = new PouchDB(dbname);
-    console.log("db obj created");
+    db = new PouchDB(dbn);
+    console.log('db obj created');
     return db;
   } catch (err) {
-    console.log("error during db creation ", err);
+    console.log(`error creating ${dbname} in prep`);
     return false;
   }
 }
-function prep_udb() {
+
+function prep_udb(udb, dbn) {
   try {
     console.log("db obj not exist");
-    var udb = new PouchDB(udb_name);
-    console.log("db obj created");
+    udb = new PouchDB(dbn);
+    console.log('db obj created');
     return udb;
   } catch (err) {
-    console.log("error during db creation ", err);
+    console.log('error creating udb in prep', err);
     return false;
   }
 }
@@ -146,7 +147,8 @@ function dbQuery(db, q, opts) {
     return db
       .query(q, { key: opts, include_docs: true })
       .then(response => {
-        resolve(console.log("dbQuery response: ", response.rows));
+        console.log('query response: ',response.rows)
+        resolve(response.rows);
       })
       .catch(err => {
         console.log(`error in dbQuery: ${q} ${err} `);
@@ -154,18 +156,7 @@ function dbQuery(db, q, opts) {
       });
   });
 }
-function makeVisits(db) {
-  return new Promise((resolve, reject) => {
-    db.bulkDocs(sample_visits, () => {})
-      .then(result => {
-        resolve(result);
-      })
-      .catch(err => {
-        console.log("error makeVisits", err);
-        reject(err);
-      });
-  });
-}
+
 //abstracted without validation. Ensure correct body is passed in
 function create(db, body) {
   return new Promise((resolve, reject) => {
@@ -180,6 +171,18 @@ function create(db, body) {
         });
     });
   });
+}
+
+function get_one(db, _id) {
+  return new Promise((resolve, reject) => {
+    return db.get(_id)
+    .then((doc) => {
+        resolve(doc)
+    }).catch((err) => {
+        console.log(err);
+        reject(err);
+    });
+});
 }
 
 function remove(db, _id) {
@@ -199,10 +202,23 @@ function remove(db, _id) {
   });
 }
 
+function makeVisits(db) {
+  return new Promise((resolve, reject) => {
+    db.bulkDocs(sample_visits, () => {})
+      .then(result => {
+        console.log(result.rows);
+        resolve(result);
+      })
+      .catch(err => {
+        console.log("error makeVisits", err);
+        reject(err);
+      });
+  });
+}
+
 function create_sample_user(udb, obj) {
   return new Promise((resolve, reject) => {
-    return udb
-      .put(obj)
+    return udb.put(obj)
       .then(result => {
         console.log("created sample user", result);
         resolve(result);
@@ -214,7 +230,21 @@ function create_sample_user(udb, obj) {
   });
 }
 
-//the calling function needs to be wrapped in a promise
+function put_attachment(db, id, fName, rev, data, type) {
+  return new Promise((resolve, reject) => {
+    db.putAttachment(id, fName, rev, data, type)
+    .then(result => {
+      console.log(result)
+      resolve(result)    
+    })
+    .catch(err => {
+      console.log('error during file upload', err);
+      reject(err)
+    });
+  });
+  
+}
+
 function update(db, body) {
   return new Promise((resolve, reject) => {
     return db
@@ -329,5 +359,8 @@ module.exports = {
   prep_db,
   erase_indexes,
   prep_udb,
-  get_dbinfo
+  get_dbinfo,
+  get_one,
+  put_attachment,
+
 };
