@@ -173,6 +173,7 @@ function create(db, body) {
   });
 }
 
+//uses map reduce query
 function get_one(db, _id) {
   return new Promise((resolve, reject) => {
     return db.get(_id)
@@ -182,6 +183,25 @@ function get_one(db, _id) {
         console.log(err);
         reject(err);
     });
+});
+}
+
+//uses mango
+function find_one(db, q) {
+  return new Promise((resolve, reject) => {
+  return db.find({
+    selector: {
+      $and: [
+        {last_name: { '$eq': q }},
+      ]
+    }
+  }).then((doc) => {
+    console.log(doc)
+    resolve(doc)
+  }).catch((err) => {
+    console.log('error in find_one ', err)
+    reject(err)
+  });
 });
 }
 
@@ -200,7 +220,7 @@ function remove(db, _id) {
         reject(err);
       });
   });
-}
+  }
 
 function makeVisits(db) {
   return new Promise((resolve, reject) => {
@@ -362,5 +382,6 @@ module.exports = {
   get_dbinfo,
   get_one,
   put_attachment,
+  find_one,
 
 };

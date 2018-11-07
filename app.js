@@ -72,6 +72,7 @@ app.post("/patients", patients_controller.add_patient);
 app.get("/patients/add", patients_controller.render_addPage);
 app.get("/patients/edit/:id", patients_controller.get_edit_patient);
 app.post("/patients/delete/:id", patients_controller.delete_patient);
+app.post("/patients/search", patients_controller.search);
 
 app.get("/view/:id", view_controller.view_patient);
 app.get("/view/soap/:id", view_controller.render_soap);

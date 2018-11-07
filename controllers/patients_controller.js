@@ -24,6 +24,26 @@ hbs.registerHelper("paginate", paginate);
 
 ("use strict");
 
+module.exports.search = (req, res, next) => {
+  return dbFuncs.find_one(req.app.db, req.body.search)
+  .then((doc) => {
+    count = doc.length
+    var perPage = 100
+    var page = req.query.p || 1
+    if (count < 500){perPage = count}
+    let pages = Math.ceil(count / perPage)
+    res.render("patients", {
+      pagination: {
+        page: page,
+        pageCount: pages
+      },
+        obj: doc,
+        // current: page,
+        // replication: req.app.replication
+    });
+  });
+}
+
 module.exports.render_patients = (req, res, next) => {
   //TODO: change per page to parameter passed from template
   //var perPage = req.params.perPage || 50;
