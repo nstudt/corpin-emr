@@ -181,8 +181,8 @@ module.exports.replicate_to_remote = (req, res) => {
         }
         return delay * 3;
       },
-      timeout: timeout,
-      batch_size: batch_size
+      timeout: req.app.timeout,
+      batch_size: req.app.batch_size
     })
     .on("complete", result => {
       console.log(" pull relication result", result);
@@ -191,7 +191,8 @@ module.exports.replicate_to_remote = (req, res) => {
     })
     .on('change', info => {
       req.app.set("replication", "on");
-      console.log('Replication Progress', helpers.getProgress(info.pending));
+      console.log("replication in progress");
+      // console.log('Replication Progress', helpers.getProgress(info.pending));
     })
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);

@@ -94,6 +94,7 @@ module.exports.render_addPage = (req, res) => {
 
 //TODO: refactor
 module.exports.add_patient = (req, res) => {
+  db = req.app.db;
   var newPatient = new pmodel.Patient(req.body);
   newPatient.added = new Date();
   return db.put(newPatient)
