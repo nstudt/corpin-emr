@@ -43,15 +43,17 @@ module.exports.render_admin = (req, res) => {
       system: system,
       replication: req.app.replication
     });
-  });
+  }).catch((err) => {
+    console.log(err);
+  })
 };
 
 module.exports.create_db = (req, res) => {
-  app.db = dbFuncs.prep_db("db", dbname);
+  app.db = dbFuncs.prep_db(req.app.db, dbname);
   if (app.db == false) {
     console.log("error creating db");
   }
-  app.udb = dbFuncs.prep_udb("udb", udb_name);
+  app.udb = dbFuncs.prep_udb(req.app.udb, udb_name);
   if (app.udb == false) {
     console.log("error creating udb");
   }

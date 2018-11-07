@@ -1,9 +1,10 @@
 const PouchDB = require("pouchdb");
 const express = require("express");
 const app = express();
-var pmodel = require("./models/patientModel");
+const pmodel = require("@models/patientModel");
 const bodyParser = require("body-parser");
 var dbname = app.get('dbname');
+
 var udb_name = app.get('userdb');
 var db;
 ("use strict");
@@ -58,12 +59,13 @@ function get_dbinfo(db) {
 //error 412 (missing _id), which is obviously there. No idea.
 function addVisitId(db, p_id, v_id, v_date) {
   return new Promise((resolve, reject) => {
-    return db
-      .query("index/patients_only", { key: p_id, include_docs: true })
+    return db.get(p_id)
       .then(function(doc) {
-        doc.rows[0].doc.visit_ids.push(v_id);
-        doc.rows[0].doc.last_visit = v_date;
-        return db.put(doc)
+        patient = new pmodel.Patient(doc)
+        patient.visit_ids = [];
+        patient.visit_ids.push(v_id);
+        patient.last_visit = v_date;
+        return db.put(patient)
           .then(result => {
             resolve(console.log(result));
           })
@@ -187,12 +189,12 @@ function get_one(db, _id) {
 }
 
 //uses mango
-function find_one(db, q) {
+function find_one(db, last_name) {
   return new Promise((resolve, reject) => {
   return db.find({
     selector: {
       $and: [
-        {last_name: { '$eq': q }},
+        {last_name: { '$eq': last_name }},
       ]
     }
   }).then((doc) => {

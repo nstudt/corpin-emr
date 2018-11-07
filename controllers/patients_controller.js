@@ -25,7 +25,7 @@ hbs.registerHelper("paginate", paginate);
 ("use strict");
 
 module.exports.search = (req, res, next) => {
-  return dbFuncs.find_one(req.app.db, req.body.search)
+  return dbFuncs.find_one(req.app.db,  req.body.search)
   .then((doc) => {
     count = doc.length
     var perPage = 100

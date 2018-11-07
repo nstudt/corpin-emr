@@ -102,13 +102,12 @@
       x = document.getElementById('frame1').src = 'data:application/pdf;base64,' + d;
     }
   </script>
+
   <script>
     var x = document.getElementsByClassName('patient_attachments');
-
     function changeVisibility(){
          document.getElementById('delDoc').style.visibility = "visible";
        }
-
     for (i = 0; i < x.length; i++){
       x[i].addEventListener("click",changeVisibility)
     }
@@ -140,17 +139,18 @@
     });
 });
   </script>
+
   <script>
-function checkAtrributes(attr){
+  function checkAtrributes(attr){
   if (attr=="true"){
     document.getElementById('pregnant').style.display = "inline";
   }else{
     document.getElementById('pregnant').style.display = "none";
   }
-  
   console.log(attr);
 }
   </script>
+
 </body>
 
 </html>
