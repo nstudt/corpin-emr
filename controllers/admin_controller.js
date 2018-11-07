@@ -19,9 +19,9 @@ var system = new helpers.local_system();
 
 ("use strict");
 // var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
-var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
-// var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
-// var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
+// var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
+var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
 
 module.exports.toggle_repl = (req, res) => {
   repl_state = req.app.get("replication");
@@ -192,7 +192,7 @@ module.exports.replicate_to_remote = (req, res) => {
     .on('change', info => {
       req.app.set("replication", "on");
       console.log("replication in progress");
-      // console.log('Replication Progress', helpers.getProgress(info.pending));
+      console.log('Replication Progress', helpers.getProgress(info.pending));
     })
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);
