@@ -92,15 +92,17 @@ module.exports.render_addPage = (req, res) => {
   res.render("add", {replication: req.app.replication});
 };
 
-//TODO: refactor
+//TODO: refactor db ops to dbFuncs
 module.exports.add_patient = (req, res) => {
   db = req.app.db;
   var newPatient = new pmodel.Patient(req.body);
   newPatient.added = new Date();
+  patient.visit_ids = [];
+  if (!patient.medications){patient.medications = []};
   return db.put(newPatient)
     .then(result => {
       console.log('patient added' ,result);
-      res.redirect("/patients");
+      res.redirect("/patients",  {replication: req.app.replication});
     })
     .catch(err => {
       console.log("error in add_patient", err);

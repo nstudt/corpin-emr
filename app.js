@@ -40,6 +40,7 @@ app.timeout = 5000;
 app.dbinfo = new helpers.DBINFO();
 app.replication = "off";
 app.app_path = __dirname;
+app.physician_id = "CorpinChloe"; //dev only
 
 // app.use('/admin/toggle_repl', function(req, res, next) {
 //   try{
@@ -78,6 +79,7 @@ app.get("/view/:id", view_controller.view_patient);
 app.get("/view/soap/:id", view_controller.render_soap);
 app.post("/view/soap/:id", view_controller.post_soap);
 app.post("/view/rx", view_controller.view_rx);
+app.post("/view/write_rx", view_controller.write_rx);
 
 app.get("/rxnorm", (req, res) => {
   res.render("rxnorm");

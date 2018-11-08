@@ -21,12 +21,18 @@ class User {
     this.phone1 = obj.phone1;
     this.user_name = obj.user_name;
     this.email = obj.email;
-    this.roles = obj.roles;
+    this.role = obj.role;
     this.active = obj.active;
     this.password = obj.password;
     this.last_modified = obj.last_modified;
+    this.is_admin = obj.is_admin; //boolean
+   if (obj.role == "physician"){
+      this.physican_id = obj.last_name = obj.first_name;
+  }
   };
 }
+
+
 
 class Roles {
   //not a db object. No _id required. This class is used to generate a static list for selecting user.roles.

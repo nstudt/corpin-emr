@@ -4,21 +4,23 @@ const PouchDB = require("pouchdb");
 ("use strict");
 
  class Prescription {
-   constructor(){
+   constructor(obj){
      if (obj._id) {
        this._id = obj._id
      }else{
       this._id = uuidv4();
      }
-     this.name = obj.name;
+     this.type = "rx";
+     this.medication = obj.medication;
      this.strength = obj.strength;
      this.amount = obj.amount;
      this.route = obj.route;
      this.frequency = obj.frequency;
-     this.total = obj.total;
+     this.dispense = obj.dispense;
      this.refills = obj.refills;
      this.patient_id = obj.patient_id;
-     this.phys_id = obj.phys_id;
+     this.physician_id = obj.physician_id;
+     this.date = obj.date;
     }
  }
 
@@ -63,6 +65,10 @@ class Patient {
     }else{
      this._id = uuidv4();
     }
+    this.medications = [];
+    if (obj.medications) {
+      this.medications.push(obj.medications);
+    }
     this._attachments = obj._attachments;
     this._rev = obj._rev;
     this.type = "patient";
@@ -83,15 +89,14 @@ class Patient {
     this.visits = obj.visits;
     this.files = obj.files; 
     this.allergies = obj.allergies;
-    this.medications = obj.medications;
     this.height = obj.height;
     this.weight = obj.weight;
     this.blood_pressure = obj.blood_pressure;
     this.pulse = obj.pulse;
     this.temp = obj.temp;
     this.age = this.constructor.calculate_age(obj.dob);
-    this.files_meta = obj.files_meta;
-    this.pregnant = obj.pregnant;
+    this.files_meta = obj.files_meta; //unused
+    this.pregnant = obj.pregnant; //boolean
     this.added = obj.added;
     this.modified = obj.modified;
    
@@ -302,7 +307,6 @@ module.exports = {
   Patient,
   samplePatients,
   Vitals,
-  Visits
-  // getAllDocs,
-  // getDoc
+  Visits,
+  Prescription,
 };

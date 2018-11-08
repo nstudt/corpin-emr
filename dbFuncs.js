@@ -56,24 +56,44 @@ function get_dbinfo(db) {
 }
 
 //appends visit _id to patient record
-//error 412 (missing _id), which is obviously there. No idea.
 function addVisitId(db, p_id, v_id, v_date) {
   return new Promise((resolve, reject) => {
     return db.get(p_id)
       .then(function(doc) {
+        if (!doc.visit_ids){doc.visit_ids = []} //needed for old record compatability
         patient = new pmodel.Patient(doc)
-        patient.visit_ids = [];
         patient.visit_ids.push(v_id);
         patient.last_visit = v_date;
         return db.put(patient)
           .then(result => {
-            resolve(console.log(result));
+            resolve(result);
           })
           .catch(err => {
             console.log("error in addVisitID", err);
             reject(err);
           });
       });
+  });
+}
+
+//appends medication to patienet.medications array
+//this is close to a duplication of add_visits. 
+//Look at abstracting both functions into one.
+function add_medication(db, p_id, med) {
+  return new Promise((resolve, reject) => {
+    return db.get(p_id)
+    .then((doc) => {
+      patient = new pmodel.Patient(doc)
+      patient.medications.push(med);
+      return db.put(patient)
+            .then(result => {
+              resolve(console.log(result));
+            })
+            .catch(err => {
+              console.log("error in addVisitID", err);
+              reject(err);
+            });
+    })
   });
 }
 
@@ -162,14 +182,15 @@ function dbQuery(db, q, opts) {
 //abstracted without validation. Ensure correct body is passed in
 function create(db, body) {
   return new Promise((resolve, reject) => {
-    db.put(body).then(result => {
-      //display the doc just created
-      db.get(result._id, { include_docs: true })
-        .then(doc => {
-          console.log(doc.rows);
+    return db.put(body)
+    .then(result => {
+      return db.get(result.id, { include_docs: true }) //verify write
+      .then(doc => {
+          resolve(doc);
         })
         .catch(err => {
           console.log("error in dbFuncs.create", err);
+          reject(err)
         });
     });
   });
@@ -385,5 +406,6 @@ module.exports = {
   get_one,
   put_attachment,
   find_one,
+  add_medication,
 
 };

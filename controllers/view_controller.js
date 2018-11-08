@@ -36,12 +36,30 @@ module.exports.view_patient = (req, res) => {
         });
     });
   }
-module.exports.view_rx = ((req, res) => {
+
+  // TODO: read physician_id
+module.exports.view_rx = (req, res) => {
   res.render('rxModal', {
-    patient: req.app.patient
+    patient: req.app.patient,
+    physician_id: req.app.physician_id
   });
-  });
+  };
   
+//TODO: send flash message on update success
+  module.exports.write_rx = (req, res ) => {
+    let prescription = new pmodel.Prescription(req.body);
+    prescription.physician_id = "dr corpin";
+    prescription.date = new Date();
+    return dbFuncs.create(req.app.db, prescription) //create prescrition
+    .then((doc) => { //rx is will be in doc
+      return dbFuncs.add_medication(req.app.db, req.body.patient_id, req.body.medication)
+    }).then((result) => {
+      //send flash message
+      console.log(result);
+    }).catch((err) => {
+      console.log('error writing prescription', err);
+    })
+  }
 
 //TODO: send flash message on update success
 module.exports.post_soap = ((req, res) => {
@@ -64,14 +82,14 @@ module.exports.post_soap = ((req, res) => {
   });
   
 
-module.exports.render_soap = ((req, res) => {
+module.exports.render_soap = (req, res) => {
   res.render("soap", { id: req.params.id });
-});
+};
 
-module.exports.render_soapRx = ((req, res) => {
+module.exports.render_soapRx = (req, res) => {
     res.send('tbd');
-  });
+  };
 
-  module.exports.post_soapRx = ((req, res) => {
+  module.exports.post_soapRx = (req, res) => {
     res.send("tbd");
-  });
+  };

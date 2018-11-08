@@ -17,7 +17,7 @@
   {{> navbar}}
   {{!-- top container --}}
   <div class="w3-center w3-container w3-padding-small noprint">
-    <h3 class="w3-center">Examination Room - {{patient.last_name}}   <span id="pregnant" name="pregnant" class="badge badge-warning">Pregnant</span></h3>
+    <h3 class="w3-center">Examination Room - {{patient.last_name}}   <span id="pregnant" name="pregnant" class="badge badge-warning" style="display: none">Pregnant</span></h3>
     <p><a href="/view/soap/{{patient._id}}" target="iframe_a" > Start Encounter</a></p>
     <p><a href="#" id="delDoc" style="visibility: hidden"> <span style="color:blue">delete document</span> </a></p>
    </div>
@@ -79,20 +79,17 @@
           <li class="w3-padding-small">{{patient.pulse}}</li>
           <li class="w3-blue w3-padding-small">Temperature</li>
           <li class="w3-padding-small">{{patient.temp}}</li>
-          <li class="w3-padding-small">{{patient.temp}}</li>
           <li class="w3-padding-small">
-            
-									<button type="submit" id="rxModal" name="rxModal" class="btn btn-success" >Prescription</button>
-								</li>
-                <li class="w3-padding-small"><form action="/view/lab" method="GET">
-									<button type="submit" class="btn btn-success">Order Lab</button>
-								</form></li>
-                 <li class="w3-padding-small"><form action="/patients/edit/{{patient._id}}" method="GET">
-									<button type="submit" class="btn btn-success">Edit Patient</button>
-								</form></li>
-          
+							<button type="submit" id="rxModal" name="rxModal" class="btn btn-success" >Prescription</button>
+					</li>
+           <li class="w3-padding-small"><form action="/view/lab" method="GET">
+							<button type="submit" class="btn btn-success">Order Lab</button>
+				</form>
+        </li>
+            <li class="w3-padding-small"><form action="/patients/edit/{{patient._id}}" method="GET">
+						<button type="submit" class="btn btn-success">Edit Patient</button>
+			</li>
       </div>
-     
     </div>
   </div>
 
@@ -133,12 +130,12 @@
     $("#rxModal").click(function(event) {
     event.preventDefault;
     $.post("/view/rx", {_id: '{{patient._id}}'}, function(data){
-      console.log(data);
       $("#rx").html(data)
       $("#rx").modal("show");
     });
 });
   </script>
+  
 
   <script>
   function checkAtrributes(attr){
