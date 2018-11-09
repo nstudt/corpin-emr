@@ -97,12 +97,12 @@ module.exports.add_patient = (req, res) => {
   db = req.app.db;
   var newPatient = new pmodel.Patient(req.body);
   newPatient.added = new Date();
-  patient.visit_ids = [];
-  if (!patient.medications){patient.medications = []};
+  newPatient.visit_ids = [];
+  
   return db.put(newPatient)
     .then(result => {
       console.log('patient added' ,result);
-      res.redirect("/patients",  {replication: req.app.replication});
+      res.redirect("/patients");
     })
     .catch(err => {
       console.log("error in add_patient", err);

@@ -16,6 +16,7 @@
     "express": "^4.16.3",
     "express-fileupload": "^1.0.0-alpha.1",
     "express-session": "^1.15.6",
+    "express-static": "^1.2.6",
     "handlebars-paginate": "^0.1.0",
     "hbs": "^4.0.1",
     "jquery": "^3.3.1",
@@ -28,7 +29,8 @@
     "redis": "^2.8.0",
     "scanner.js": "^2.10.3",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "web-push": "^3.3.3"
   },
   "devDependencies": {
     "express-pouchdb": "^4.1.0",

@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
+
+
 module.exports.view_patient = (req, res) => {
   db = req.app.db;
   return db.get(req.params.id, { attachments: true })

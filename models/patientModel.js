@@ -67,7 +67,7 @@ class Patient {
     }
     this.medications = [];
     if (obj.medications) {
-      this.medications.push(obj.medications);
+      this.medications = this.medications.concat(obj.medications);
     }
     this._attachments = obj._attachments;
     this._rev = obj._rev;

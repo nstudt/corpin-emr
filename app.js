@@ -57,9 +57,18 @@ app.use(express.static(__dirname));
 app.set("view engine", "hbs");
 
 hbs.registerPartials(path.join(__dirname , "views/partials"));
+
 //call this to pass data from an onclick to javascript function in the view
 hbs.registerHelper("json", function(obj) {
   return new hbs.SafeString(JSON.stringify(obj));
+});
+
+hbs.registerHelper('list', function(items, options) {
+  var out = "<ul>";
+  for(var i=0, l=items.length; i<l; i++) {
+    out = out + "<li>" + options.fn(items[i]) + "</li>";
+  }
+  return out + "</ul>";
 });
 
 //start routes

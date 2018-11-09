@@ -68,7 +68,9 @@
           <li class="w3-blue w3-padding-small">Allergies</li>
           <li class="w3-padding-small">{{patient.allergies}}</li>
           <li class="w3-blue w3-padding-small">Medications</li>
-          <li class="w3-padding-small">{{patient.medications}}</li>
+          {{#each patient.medications}}
+          <li class="w3-padding-small">{{this}}</li>
+          {{/each}}
           <li class="w3-blue w3-padding-small">Height</li>
           <li class="w3-padding-small">{{patient.height}}</li>
           <li class="w3-blue w3-padding-small">Weight</li>
