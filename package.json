@@ -28,6 +28,7 @@
     "pouchdb-find": "^7.0.0",
     "redis": "^2.8.0",
     "scanner.js": "^2.10.3",
+    "socket.io": "^2.1.1",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2",
     "web-push": "^3.3.3"

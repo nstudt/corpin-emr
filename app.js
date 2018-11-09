@@ -1,5 +1,10 @@
-require('module-alias/register')
+require('module-alias/register');
 const express = require("express");
+const app = express();
+const http = require('http');
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+var socket = require('socket.io')
 const _ = require('underscore');
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
@@ -16,12 +21,14 @@ const auth_controller = require('@controllers/auth_controller');
 const user_controller = require('@controllers/user_controller');
 const helpers = require("@root/helpers");
 const session = require("express-session");
-const app = express();
+
 const events = require('events').EventEmitter;
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var udb_name = "userdb";
 var udb = new PouchDB(udb_name);
+
+// var http = require('http').Server(app);
 //TODO: dotenv
 // const emitter = new events.EventEmitter();
 
@@ -72,6 +79,10 @@ hbs.registerHelper('list', function(items, options) {
 });
 
 //start routes
+app.get('/test', function(req, res) {
+  res.render('test');
+})
+
 app.get("/", index_controller.home_page);
 app.post("/login", auth_controller.login);
 
@@ -126,7 +137,19 @@ app.get("/demo", demo_controller.demo_render);
 app.get("/demo/patients", demo_controller.demo_patients);
 
 const port = 5000;
-
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+var server = http.createServer(app).listen(port, function(){
+  console.log("Express server listening on port ", port);
 });
+// app.listen(port, () => {
+//   console.log(`Server started on port ${port}`);
+// });
+var io = socket.listen(server);
+io.sockets.on('connection', function () {
+  console.log('hello world im a hot socket');
+});
+
+// io.on('connection', (socket) => {
+//   socket.emit('hello', {
+//     greeting: "Welcome"
+//   });
+// });
