@@ -33,12 +33,9 @@ module.exports.render_admin = (req, res) => {
   return dbFuncs.get_dbinfo(req.app.db)
   .then((info) => {
     req.app.dbinfo.info = info;
-  return dbFuncs.get_dbinfo(req.app.udb)
-  }).then((udbinfo) => {
-    req.app.udbinfo.info = udbinfo;
     res.render("admin", {
       info: req.app.dbinfo.info,
-      udbinfo: req.app.udbinfo.info,
+      //udbinfo: req.app.udbinfo.info,
       remoteDB: remoteDB,
       remoteUDB: remoteUDB,
       system: system,
@@ -121,9 +118,9 @@ module.exports.build_index2 = (req, res) => {
     });
 };
 
-module.exports.build_find_indexes = (req, res) => {
+module.exports.build_find_index = (req, res) => {
   return dbFuncs
-    .buildPatientsFindIndexes(req.app.db)
+    .buildPatientsFindIndex(req.app.db)
     .then(result => {
       console.log("from build_find_indexes", result);
       res.redirect("/patients");
@@ -131,6 +128,20 @@ module.exports.build_find_indexes = (req, res) => {
     })
     .catch(err => {
       console.log("from build_find_indexes", err);
+      helpers.emit_to_client(req.app.io, 'message', 'failed to build mango queries.');
+    });
+};
+
+module.exports.build_find_index2 = (req, res) => {
+  return dbFuncs
+    .buildUsersFindIndex(req.app.db)
+    .then(result => {
+      console.log("from build user index", result);
+      res.redirect("/admin");
+      helpers.emit_to_client(req.app.io, 'message', 'mango indexes build success!');
+    })
+    .catch(err => {
+      console.log("from user_indexes", err);
       helpers.emit_to_client(req.app.io, 'message', 'failed to build mango queries.');
     });
 };

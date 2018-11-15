@@ -10,4 +10,5 @@
 /.secret
 /._users
 /patients/*
+/users
 

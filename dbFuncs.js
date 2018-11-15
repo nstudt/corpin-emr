@@ -5,8 +5,6 @@ const pmodel = require("@models/patientModel");
 const bodyParser = require("body-parser");
 var dbname = app.get('dbname');
 
-var udb_name = app.get('userdb');
-var db;
 ("use strict");
 
 // declare views
@@ -51,6 +49,7 @@ function initialize_udb(udb){
     last_name: "administrator",
     password: "password"
   };
+  console.log('initializing udb');
   return new Promise((resolve, reject) => {
     udb.put(admin)
     .then((result) => {
@@ -58,6 +57,9 @@ function initialize_udb(udb){
       return build_index2(udb)
     }).then((result) => {
       console.log(result)
+      return buildUsersFindIndex(udb)
+    }).then((result) => {
+      console.log('user find index complete', result)
     }).catch((err) => {
       console.log(err)
     })
@@ -162,13 +164,33 @@ function build_index2(udb) {
   });
 }
 //TODO: is this index optimized?
-function buildPatientsFindIndexes(db) {
+function buildPatientsFindIndex(db) {
   return new Promise((resolve, reject) => {
     return db
       .createIndex({
         index: {
           name: ["patients"],
           ddoc: ["patients"],
+          fields: ["last_name"]
+        }
+      })
+      .then(result => {
+        console.log(result);
+        resolve(result);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}
+function buildUsersFindIndex(db) {
+  return new Promise((resolve, reject) => {
+    return db
+      .createIndex({
+        index: {
+          name: ["users"],
+          ddoc: ["users"],
           fields: ["last_name"]
         }
       })
@@ -208,7 +230,7 @@ function prep_udb(udb, dbn) {
 function dbQuery(db, q, opts) {
   return new Promise((resolve, reject) => {
     return db
-      .query(q, {key: opts, include_docs: true })
+      .query(q)
       .then(response => {
         console.log('query response: ',response.rows)
         resolve(response.rows);
@@ -418,7 +440,8 @@ module.exports = {
   remove,
   create_sample_user,
   build_index2,
-  buildPatientsFindIndexes,
+  buildPatientsFindIndex,
+  buildUsersFindIndex,
   prep_db,
   erase_indexes,
   prep_udb,

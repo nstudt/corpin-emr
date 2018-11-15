@@ -26,19 +26,19 @@
                     </thead>
 
                     <tbody>
-                        {{#each obj}}
+                        {{#each obj.docs}}
                         <tr>
-                            <td>{{doc.user_name}}</td>
-                            <td>{{doc.first_name}}</td>
-                            <td>{{doc.last_name}}</td>
-                            <td>{{doc.phone1}}</td>
-                            <td>{{doc.title}}</td>
-                            <td>{{doc.department}}</td>
-                            <td>{{doc.email}}</td>
-                            <td>{{doc.roles}}</td>
+                            <td>{{user_name}}</td>
+                            <td>{{first_name}}</td>
+                            <td>{{last_name}}</td>
+                            <td>{{phone1}}</td>
+                            <td>{{title}}</td>
+                            <td>{{department}}</td>
+                            <td>{{email}}</td>
+                            <td>{{roles}}</td>
 
-                            <td><a method="get" href="/users/remove/{{doc._id}}" class="btn btn-primary btn-sm">Delete</a></td>
-                            <form action="/users/remove/{{doc._id}}" method="post">
+                            <td><a method="get" href="/users/remove/{{_id}}" class="btn btn-primary btn-sm">Delete</a></td>
+                            <form action="/users/remove/{{_id}}" method="post">
                             <td><button type="submit" class="btn btn-primary btn-sm">Submit</button></td>
                             </form>
                             {{/each}}

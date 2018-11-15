@@ -44,10 +44,19 @@ module.exports.update_user = (req, res) => {
   };
 
 module.exports.render_users = (req, res) => {
-  return dbFuncs.dbQuery(req.app.udb, "index2/users_only")
-    .then(function(response) {
-      res.render("users", {
-        obj: response.rows
+  return req.app.udb.find({
+    selector: {
+      $and: [
+        {last_name: { '$gt': 1}},
+      ]
+    },
+    use_index: ['users'],
+    sort: [{'last_name': 'asc'}],
+    
+  })
+    .then((docs) => {
+      res.render('users', {
+        obj: docs
       });
     })
     .catch(err => {
@@ -55,7 +64,6 @@ module.exports.render_users = (req, res) => {
       if (err.status == 404) {
         res.render("users");
       }
-      
     });
 };
 

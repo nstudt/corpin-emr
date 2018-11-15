@@ -108,7 +108,8 @@ app.get("/admin/build_index", admin_controller.build_index);
 app.get("/admin/build_index2", admin_controller.build_index2);
 app.post("/admin/replicate_patients", admin_controller.replicate_patients);
 app.post("/admin/replicate_users", admin_controller.replicate_users);
-app.get("/admin/build_find_indexes", admin_controller.build_find_indexes);
+app.get("/admin/build_find_index", admin_controller.build_find_index);
+app.get("/admin/build_find_index2", admin_controller.build_find_index2);
 app.post("/admin/replicate_from_remote", admin_controller.replicate_from_remote);
 app.post("/admin/replicate_to_remote", admin_controller.replicate_to_remote);
 
@@ -138,19 +139,20 @@ function check_dbs(dbt, udbt) {
     .then((result) => {
       console.log(`${result.db_name} database is ready;`, result);
       return udbt.info()
-    }).then((result) => {
-      console.log(`${result.db_name} database is ready;`, result);
-      if (result.doc_count == 0){
+    }).then((result2) => {
+      console.log(`${result2.db_name} udb is ready;`, result2);
+      if (result2.doc_count == 0){
         console.log('user database contains no users. Creating default admin account')
         //new installation detected, because no user detected
         return dbFuncs.initialize_udb(udbt)
-        .then((result) => {
-          console.log('user created', result)
+        .then((result3) => {
+          console.log('user created', result3)
         })
       }
+      console.log('udb contains users');
       return udbt.allDocs()
       }).then((docs) => {
-        console.log(docs);
+        console.log('users db:', docs);
       })
     .catch((err) => {
       console.log(err);
