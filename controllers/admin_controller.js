@@ -31,31 +31,28 @@ module.exports.toggle_repl = (req, res) => {
 module.exports.render_admin = (req, res) => {
   system.uptime = os.uptime();
   return dbFuncs.get_dbinfo(req.app.db)
-  .then(info => {
-    console.log(__filename);
+  .then((info) => {
     req.app.dbinfo.info = info;
-    console.log(req.app.dbinfo.info);
+  return dbFuncs.get_dbinfo(req.app.udb)
+  }).then((udbinfo) => {
+    req.app.udbinfo.info = udbinfo;
     res.render("admin", {
-      // indexes: dbinfo.indexes.indexes,
       info: req.app.dbinfo.info,
+      udbinfo: req.app.udbinfo.info,
       remoteDB: remoteDB,
       remoteUDB: remoteUDB,
       system: system,
       replication: req.app.replication
     });
   }).catch((err) => {
-    console.log(err);
-  })
-};
+    console.log(err)
+  });
+}
 
 module.exports.create_db = (req, res) => {
   app.db = dbFuncs.prep_db(req.app.db, dbname);
   if (app.db == false) {
     console.log("error creating db");
-  }
-  app.udb = dbFuncs.prep_udb(req.app.udb, udb_name);
-  if (app.udb == false) {
-    console.log("error creating udb");
   }
   res.redirect("/admin");
 };
@@ -81,32 +78,37 @@ module.exports.sample_data = (req, res) => {
   return dbFuncs
     .makeVisits(req.app.db)
     .then((result) => {
-      return dbFuncs.create_sample_user(req.app.udb, suser);
-    })
-    .then(result => {
-      console.log("result of create_sample_user", result);
-      delete suser;
-      res.redirect("/admin");
+      console.log('result of makeVisits', result);
+      res.render('admin');
     })
     .catch(err => {
-      console.log("error in sample_data", err);
+      console.log("error crating sample user", err);
     });
 };
 
 module.exports.build_index = (req, res) => {
-  
-  return dbFuncs
-    .build_index(req.app.db)
+  return dbFuncs.build_index(req.app.db)
     .then(result => {
       console.log("result of build_index(db)", result);
-      return dbFuncs.build_index2(req.app.udb);
-    })
-    .then(result => {
-      console.log("result of build_index(udb)", result);
+     helpers.emit_to_client(req.app.io, 'message', 'index build success!');
       dbFuncs.dbQuery(req.app.db, "index/visits", "a123456");
     })
     .then(() => {
       dbFuncs.dbQuery(req.app.db, "index/patients_only", 'a123456');
+    })
+    .then(() => {
+      res.redirect("/admin");
+    })
+    .catch(err => {
+          console.log("error in setting/buildQuery", err);
+    });
+};
+
+module.exports.build_index2 = (req, res) => {
+  return dbFuncs.build_index2(req.app.udb)
+    .then(result => {
+      console.log("result of build_index2(udb)", result);
+      helpers.emit_to_client(req.app.io, 'message', 'index build success!');
     })
     .then(() => {
       dbFuncs.dbQuery(req.app.udb, "index2/users_only", 'la23ks45jf76');
@@ -120,15 +122,16 @@ module.exports.build_index = (req, res) => {
 };
 
 module.exports.build_find_indexes = (req, res) => {
-  
   return dbFuncs
     .buildPatientsFindIndexes(req.app.db)
     .then(result => {
       console.log("from build_find_indexes", result);
       res.redirect("/patients");
+      helpers.emit_to_client(req.app.io, 'message', 'mango indexes build success!');
     })
     .catch(err => {
       console.log("from build_find_indexes", err);
+      helpers.emit_to_client(req.app.io, 'message', 'failed to build mango queries.');
     });
 };
 
@@ -155,9 +158,11 @@ module.exports.replicate_from_remote = (req, res) => {
     .on("complete", result => {
       console.log(" pull relication result", result);
       console.log("stopped replication after completion");
+      helpers.emit_to_client(req.app.io, 'message', 'patient records replicated from server success!');
     })
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);
+      helpers.emit_to_client(req.app.io, 'message', 'A deny error has occured during replication. Please restart server.');
     })
     .on("error", err => {
       console.log("error during pull replcation", err);
@@ -188,6 +193,7 @@ module.exports.replicate_to_remote = (req, res) => {
       console.log(" pull relication result", result);
       res.redirect("/patients");
       req.app.set("replication", "off");
+      helpers.emit_to_client(req.app.io, 'message', 'completed replication to server');
     })
     .on('change', info => {
       req.app.set("replication", "on");
@@ -197,6 +203,7 @@ module.exports.replicate_to_remote = (req, res) => {
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);
       req.app.set("replication", "error");
+      helpers.emit_to_client(req.app.io, 'message', 'A deny error has occured during replication. Please restart server.');
     })
     .on("error", err => {
       console.log("error during pull replcation", err);
@@ -238,11 +245,15 @@ module.exports.replicate_patients = (req, res) => {
     .on("denied", err => {
       console.log("remote server denied replicaiton", err);
       req.app.replication = "error";
+      helpers.emit_to_client(req.app.io, 'message', 'A deny error has occured during replication. Please restart server.');
+
     })
     .on("complete", result => {
       console.log("two-way replication completed", result);
       req.app.set("replication", "off");
       res.redirect("/patients");
+      helpers.emit_to_client(req.app.io, 'message', 'Replication with Server Completed!');
+
     });
   setTimeout(function() {
     res.redirect("/patients");

@@ -21,9 +21,9 @@
 					<thead>
 						<tr>
 							<th>Wipe Local Data</th>
-							<th>Create DB</th>
 							<th>Sample Data</th>
-							<th>Build Indexes</th>
+							<th>Build User Index</th>
+							<th>Build Patients Index</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -34,24 +34,25 @@
 								</form>
 							</td>
 							<td>
-								<form action="/admin/createdb" method="POST">
-									<button type="submit" class="btn btn-success" disabled>Create</button>
-								</form>
-							</td>
-							<td>
 								<form action="/admin/sample" method="POST">
-									<button type="submit" class="btn btn-success" disabled>Generate</button>
+									<button type="submit" class="btn btn-success" >Generate</button>
 								</form>
 							</td>
 							<td>
-								<form action="/admin/build_index" method="POST">
-									<button type="submit" class="btn btn-success">Index</button>
+								<form action="/admin/build_index2" method="GET">
+									<button type="submit" class="btn btn-success">Build</button>
+								</form>
+							</td>
+
+							<td>
+								<form action="/admin/build_index" method="GET">
+									<button type="submit" class="btn btn-success">Build</button>
 								</form>
 							</td>
 						</tr>
 					</tbody>
-				
-<thead>
+
+					<thead>
 						<tr>
 							<th>Replicate from Remote</th>
 							<th>Sync Patients</th>
@@ -62,77 +63,75 @@
 					<tbody>
 						<tr>
 							<td>
-								<form action="/admin/replicate_from_remote" method="GET">
-									<button type="submit" class="btn btn-success" disabled>Submit</button>
+								<form action="/admin/replicate_from_remote" method="POST">
+									<button type="submit" class="btn btn-success" >Submit</button>
 								</form>
 							</td>
 							<td>
-								<form action="/admin/replicate_patients" method="GET">
-									<button type="submit" class="btn btn-success" disabled>Sumit</button>
+								<form action="/admin/replicate_patients" method="POST">
+									<button type="submit" class="btn btn-success" >Sumit</button>
 								</form>
 							</td>
 							<td>
-								<form action="/admin/replicate_users" method="GET">
-									<button type="submit" class="btn btn-success" disabled>Sumit</button>
+								<form action="/admin/replicate_users" method="POST">
+									<button type="submit" class="btn btn-success" >Sumit</button>
 								</form>
 							</td>
 							<td>
-								<form action="/admin/build_find_indexes" method="POST">
+								<form action="/admin/build_find_indexes" method="GET">
 									<button type="submit" class="btn btn-success">Submit</button>
 								</form>
 							</td>
 						</tr>
 					</tbody>
-</table>
+				</table>
 
 
-			<div id="dashboard-visits-chart"></div>
-		</div>
-		<div role="tabpanel" class="tab-pane fade" id="downloads">
-			<p class="title-description">
-				Buttons and results for all db functions
-			</p>
+				<div id="dashboard-visits-chart"></div>
+			</div>
+			<div role="tabpanel" class="tab-pane fade" id="downloads">
+				<p class="title-description">
+					Buttons and results for all db functions
+				</p>
 
-			<div id="dashboard-downloads-chart"></div>
+				<div id="dashboard-downloads-chart"></div>
+			</div>
 		</div>
 	</div>
 </div>
-</div>
 
 <script>
-	function confirm_action(path, params, method){
-		var r=confirm("Press a button");
-if (r==true)
-  {
-  postORget(path, params, method);
-  }
-else
-  {
-  console.log('cancel');
-  }
+	function confirm_action(path, params, method) {
+		var r = confirm("Press a button");
+		if (r == true) {
+			postORget(path, params, method);
+		}
+		else {
+			console.log('cancel');
+		}
 	}
 
 	function postORget(path, params, method) {
-    method = method || "post"; // Set method to post by default if not specified.
+		method = method || "post"; // Set method to post by default if not specified.
 
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    var form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
+		// The rest of this code assumes you are not using a library.
+		// It can be made less wordy if you use one.
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
 
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
+		for (var key in params) {
+			if (params.hasOwnProperty(key)) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", params[key]);
 
-            form.appendChild(hiddenField);
-        }
-    }
+				form.appendChild(hiddenField);
+			}
+		}
 
-    document.body.appendChild(form);
-    form.submit();
-}
+		document.body.appendChild(form);
+		form.submit();
+	}
 </script>

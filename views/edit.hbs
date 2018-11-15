@@ -2,7 +2,8 @@
 
 {{> head}}
 
-<body>
+<body onload="set_attr()">
+    
     {{> header}}
     {{> navbar}}
     <div class="card border-primary">
@@ -45,7 +46,7 @@
                             </label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" name="pregnant" id="pregnant" checked="{{patient.pregnant}}">
+                            <input type="hidden" name="pregnant" value="0"><input id="pregnant" type="checkbox" onclick="this.previousSibling.value=1-this.previousSibling.value">
                             <label class="form-check-label form-control" for="pregnant">
                                 Pregnant
                             </label>
@@ -173,6 +174,16 @@
             </form>
 
         </div>
+    <script>
+    function set_attr() {
+    document.getElementById('pregnant').checked = {{pregnant}};
+    if ('{{sex}}' == "male"){
+    document.getElementById('male').checked = true;
+    } else {
+    document.getElementById('female').checked = true;    
+    };
+    };
+    </script>
 </body>
 
 </html>

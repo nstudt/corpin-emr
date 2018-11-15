@@ -6,6 +6,7 @@ const app = express();
 const dbFuncs = require("@root/dbFuncs");
 const PouchDB = require("pouchdb");
 PouchDB.plugin(require("pouchdb-find"));
+
 // var dbname = "patients";
 // var db = new PouchDB(dbname);
 const pmodel = require("@models/patientModel");
@@ -115,6 +116,7 @@ module.exports.get_edit_patient = (req, res) => {
       res.render("edit", {
         patient: patient,
         pregnant: patient.pregnant,
+        sex: patient.sex,
         replication: req.replication
       });
     })
@@ -129,8 +131,13 @@ module.exports.post_edit_patient = (req, res) => {
     dbFuncs.update(req.app.db, doc, () => {})
       .then(() => {
         res.redirect("/patients");
+        helpers.emit_to_client(req.app.io, 'message', 'patient record updated');
+
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.log('error during patient update', err);
+        helpers.emit_to_client(req.app.io, 'message', 'error during patient update');
+      });
     }
 
     //TODO: add deleted flash message
@@ -139,9 +146,11 @@ module.exports.delete_patient = (req, res) => {
     let _id = req.params.id;
     return dbFuncs.remove(req.app.db, _id).then((result) => {
       console.log(result)
-      res.redirect("/patients")
+      helpers.emit_to_client(req.app.io, 'message', 'patient record deleted');
+      res.redirect("/patients");
     }).catch((err) => {
       console.log('error in delete_patient', err);
+      helpers.emit_to_client(req.app.io, 'message', 'error deleting patient record');
     });
   
 };
@@ -156,9 +165,11 @@ module.exports.file_upload = (req, res) => {
   dbFuncs.put_attachment(req.app.db,_id.toString(), fName, _rev.toString(), fileName.data, type)
     .then(result => {
       console.log(result)
+      helpers.emit_to_client(req.app.io, 'message', 'file uploaded to patient record');
       res.redirect("/patients");
     })
     .catch(err => {
       console.log('error during file upload', err);
+      helpers.emit_to_client(req.app.io, 'message', 'an error occured during patient file upload.');
     });
 };

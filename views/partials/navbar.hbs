@@ -1,5 +1,3 @@
-
-
 <nav class="navbar navbar-expand-sm bg-primary text-white  mb-3">
     <div class="continer"></div>
     <a class="navbar-brand" href="/">Corpin EMR</a>
@@ -32,61 +30,102 @@
 
             {{!-- <li class="nav-item w3-right">
                 <a href=# class="nav-link w3-large">Admin</a>
-               </li>  --}}
-               <li class="nav-item w3-right">
+            </li> --}}
+            <li class="nav-item w3-right">
                 <a href="/admin/replicate_to_remote" class="nav-link w3-large">Push Records</a>
-               </li>
-                {{!-- <li class="nav-item w3-right">
+            </li>
+            {{!-- <li class="nav-item w3-right">
                 <a href="/admin/test" class="nav-link w3-large">test get</a>
-               </li> --}}
-     </div>
-            </li>
-            <li class="nav-item">
-                <a id="atag" class="nav-link w3-large" href="#"><span id="repl_badge" class="badge badge-light" >Replication</span></a>
-            </li>
-             <li class="nav-item">
-                <a  class="nav-link w3-large" href="/admin"><span id="conn_badge" class="badge badge-success">Connection</span></a>
-            </li>
+            </li> --}}
+    </div>
+    </li>
+    <li class="nav-item">
+        <a id="atag" class="nav-link w3-large" href="#"><span id="repl_badge" class="badge badge-light">Replication</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link w3-large" href="/admin"><span id="conn_badge" class="badge badge-success">Connection</span></a>
+    </li>
     </ul>
 
     </div>
     <form class="form-inline my-2 my-lg-0 w3-right" action="/patients/search" method='post'>
         <a class="nav-link w3-right" href="/users"> <i class="fas fa-cog"></i> User: admin </a>
-        <input class="form-control mr-sm-2" id="search" name="search" type="search" placeholder="Search Last Name" aria-label="Search">
+        <input class="form-control mr-sm-2" id="search" name="search" type="search" placeholder="Search Last Name"
+            aria-label="Search">
         <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
     </form>
 </nav>
 </div>
 
 <script>
-$( document ).ready(function() {
-    console.log('document loaded');
-    x = '{{replication}}';
-    console.log(x)
+    $(document).ready(function () {
+        console.log('document loaded');
+        x = '{{replication}}';
+        console.log(x)
 
-    switch(x){
-        case "off":
-            document.getElementById("repl_badge").className ="badge badge-light";
-            break;
-        case "on":
-            document.getElementById("repl_badge").className ="badge badge-success";
-            break;
-        case "error":
-            document.getElementById("repl_badge").className ="badge badge-danger";
-            break;
+        switch (x) {
+            case "off":
+                document.getElementById("repl_badge").className = "badge badge-light";
+                break;
+            case "on":
+                document.getElementById("repl_badge").className = "badge badge-success";
+                break;
+            case "error":
+                document.getElementById("repl_badge").className = "badge badge-danger";
+                break;
+        }
+    });
+</script>
+<script>
+    //toggle replication state.
+    var repl_state = $('#repl_badge').class;
+    $("#atag").click(function () {
+        $.post("/admin/toggle_repl", { state: repl_state }, function (data, status) {
+            console.log(data);
+            console.log(status);
+            $('#repl_badge').removeClass();
+            $('#repl_badge').addClass(data);
+
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var socket = io.connect();
+        socket.on('message', function (data) {
+            notifyMe(data);
+            socket.emit('response', 'response received');
+        })
+    });
+</script>
+<script>
+    function notifyMe(data) {
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+        else if (Notification.permission === "granted") {
+            var options = {
+                body: "Notification from...",
+                icon: "icon.jpg",
+                dir: "ltr"
+            };
+            var notification = new Notification(data, options);
+        }
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                if (!('permission' in Notification)) {
+                    Notification.permission = permission;
+                }
+
+                if (permission === "granted") {
+                    var options = {
+                        body: data,
+                        icon: "icon.jpg",
+                        dir: "ltr"
+                    };
+                    var notification = new Notification("EMR Notification", options);
+                }
+            });
+        }
     }
-});
-  </script>
-  <script>
-      //toggle replication state.
-      var repl_state = $('#repl_badge').class;
-      $("#atag").click(function(){
-          $.post("/admin/toggle_repl", {state: repl_state}, function(data, status){
-              console.log(data);
-              console.log(status);
-              $('#repl_badge').removeClass();
-              $('#repl_badge').addClass(data);
-              
-          });
-      });
-  </script>
+</script>

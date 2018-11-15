@@ -1,6 +1,13 @@
 const os = require("os");
 const path = require("path");
 const domain = require("domain");
+const express = require("express");
+const app = express();
+const http = require('http').Server(app);
+// var io = require('socket.io')(http);
+const socket = require('socket.io');
+
+
 
 var pendingMax = 0;
 
@@ -40,11 +47,18 @@ function per_page(count, perPage) {
         }
       }
 
-
+//currently using non-JSON data. Also only supporting 'message' type at this time.
+function emit_to_client(io, type, data) {
+  type = 'message';
+  console.log(typeof(app.socket));
+  io.emit(type, data);
+  console.log('emit to client', type + data);
+}
 
 module.exports = {
     DBINFO,
     local_system,
     per_page,
     getProgress,
+    emit_to_client,
 }

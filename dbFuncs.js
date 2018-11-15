@@ -43,6 +43,27 @@ var ddoc1 = {
   }
 };
 
+function initialize_udb(udb){
+  admin = {
+    _id: "admin",
+    type: "user",
+    user_name: "system",
+    last_name: "administrator",
+    password: "password"
+  };
+  return new Promise((resolve, reject) => {
+    udb.put(admin)
+    .then((result) => {
+      console.log(result);
+      return build_index2(udb)
+    }).then((result) => {
+      console.log(result)
+    }).catch((err) => {
+      console.log(err)
+    })
+  });
+}
+
 function get_dbinfo(db) {
   return new Promise((resolve, reject) => {
     return db.info()
@@ -140,9 +161,30 @@ function build_index2(udb) {
       });
   });
 }
+//TODO: is this index optimized?
+function buildPatientsFindIndexes(db) {
+  return new Promise((resolve, reject) => {
+    return db
+      .createIndex({
+        index: {
+          name: ["patients"],
+          ddoc: ["patients"],
+          fields: ["last_name"]
+        }
+      })
+      .then(result => {
+        console.log(result);
+        resolve(result);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+}
+
 function prep_db(db, dbn) {
   try {
-    console.log("db obj not exist");
     db = new PouchDB(dbn);
     console.log('db obj created');
     return db;
@@ -154,7 +196,6 @@ function prep_db(db, dbn) {
 
 function prep_udb(udb, dbn) {
   try {
-    console.log("db obj not exist");
     udb = new PouchDB(dbn);
     console.log('db obj created');
     return udb;
@@ -167,7 +208,7 @@ function prep_udb(udb, dbn) {
 function dbQuery(db, q, opts) {
   return new Promise((resolve, reject) => {
     return db
-      .query(q, { key: opts, include_docs: true })
+      .query(q, {key: opts, include_docs: true })
       .then(response => {
         console.log('query response: ',response.rows)
         resolve(response.rows);
@@ -305,27 +346,6 @@ function update(db, body) {
   });
 }
 
-//TODO: is this index optimized?
-function buildPatientsFindIndexes(db) {
-  return new Promise((resolve, reject) => {
-    return db
-      .createIndex({
-        index: {
-          name: ["patients"],
-          ddoc: ["patients"],
-          fields: ["last_name"]
-        }
-      })
-      .then(result => {
-        console.log(result);
-        resolve(result);
-      })
-      .catch(err => {
-        console.log(err);
-        reject(err);
-      });
-  });
-}
 
 var sample_visits = [
   {
@@ -407,5 +427,6 @@ module.exports = {
   put_attachment,
   find_one,
   add_medication,
+  initialize_udb,
 
 };

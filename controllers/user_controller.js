@@ -5,6 +5,7 @@ const path = require("path");
 const app = express();
 const dbFuncs = require("@root/dbFuncs");
 const PouchDB = require("pouchdb");
+const helpers = require("@root/helpers");
 PouchDB.plugin(require("pouchdb-find"));
 const umodel = require("@models/userModel");
 var udb_name = "userdb";
@@ -22,47 +23,47 @@ hbs.registerPartials("../views/partials");
 module.exports.create_user = (req, res) => {
   // console.log(`create user req.body ${req.body}`);
   var muser = new umodel.User(req.body);
-  dbFuncs.create(udb, muser);
-//   udb.put(muser)
-//   .then((result) => {
-//     return udb.get(result.id, {include_docs: true}
-//       ).then((doc) => {
-//     console.log(doc)
-//     res.redirect("/users");
-// })
-//     }).catch(err => {
-//       console.log("error in create_user", err);
-//     });
+return dbFuncs.create(req.app.udb, muser)
+.then((result) => {
+  console.log('successfully created user', result);
+  helpers.emit_to_client(req.app.io, 'message', 'user created');
+}).catch((err) => {
+  console.log('error during create_user', err)
+});
 };
 
 module.exports.update_user = (req, res) => {
-  return new Promise((resolve, reject) => {
-    dbFuncs.update(udb, req.body);
-    resolve(console.log("user update complete"));
-    res.redirect("/users");
+  return dbFuncs.update(req.app.udb, req.body)
+  .then(result => {
+    console.log("user update complete", result);
+    helpers.emit_to_client(req.app.io, 'message', 'user updated');
+    res.redirect("/users");;
+  }).catch((err) => {
+    console.lof('error during user update', err);
   });
-};
+  };
 
 module.exports.render_users = (req, res) => {
-  udb.query("index2/users_only", { include_docs: true })
+  return dbFuncs.dbQuery(req.app.udb, "index2/users_only")
     .then(function(response) {
       res.render("users", {
         obj: response.rows
       });
     })
     .catch(err => {
+      console.log("error in render_users", err);
       if (err.status == 404) {
         res.render("users");
       }
-      console.log("error in render_users", err);
+      
     });
 };
 
 module.exports.read_user = (req, res) => {
-  udb
+  req.app.udb
     .get(req.params.id, { attachments: true })
     .then(doc => {
-      var user = new pmodel.Patient(user);
+      var user = new pmodel.Patient(doc);
       res.render("users", {
         user: user
       });
@@ -74,19 +75,22 @@ module.exports.read_user = (req, res) => {
 
 module.exports.remove_user = (req, res) => {
     var _id = req.params.id;
-    udb.get(_id).then((doc) => {
-      return udb.remove(doc._id, doc._rev)
+    req.app.udb.get(_id).then((doc) => {
+      return req.app.udb.remove(doc._id, doc._rev)
     }).then((response) => {
       console.log(response);
+      helpers.emit_to_client(req.app.io, 'message', 'user deleted');
       res.redirect('/users');
     })
     .catch((err) => {
-      console.log('error removing user', err)
+      console.log('error removing user', err);
+      helpers.emit_to_client(req.app.io, 'message', 'error during user deletion');
     });
 };
 
 module.exports.change_password = (req, res) => {
   res.send("tbd");
+  helpers.emit_to_client(req.app.io, 'message', 'change password successful');
 };
 
 module.exports.show_roles = (req, res) => {

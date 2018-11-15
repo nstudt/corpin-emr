@@ -6,6 +6,7 @@ const app = express();
 const PouchDB = require("pouchdb");
 PouchDB.plugin(require("pouchdb-find"));
 var dbname = "patients";
+const helpers = require("@root/helpers");
 // var db = new PouchDB(dbname);
 const pmodel = require("@models/patientModel");
 const dbFuncs = require('@root/dbFuncs');
@@ -30,7 +31,8 @@ module.exports.view_patient = (req, res) => {
           req.app.patient = patient;
           res.render("view", {
             patient: patient,
-            visits: visits.rows
+            visits: visits.rows,
+            pregnant: patient.pregnant
           });
         })
         .catch(err => {
@@ -56,10 +58,11 @@ module.exports.view_rx = (req, res) => {
     .then((doc) => { //rx is will be in doc
       return dbFuncs.add_medication(req.app.db, req.body.patient_id, req.body.medication)
     }).then((result) => {
-      //send flash message
+      helpers.emit_to_client(req.app.io, 'message', 'prescription saved');
       console.log(result);
     }).catch((err) => {
       console.log('error writing prescription', err);
+      helpers.emit_to_client(req.app.io, 'message', 'error writing prescription');
     })
   }
 
@@ -75,10 +78,11 @@ module.exports.post_soap = ((req, res) => {
       return db.put(visit).then((result) => {
         (console.log(result))
         res.send('<h3 class="w3-card w3-container text-center" >Patient Record Updated</h3>');
+        helpers.emit_to_client(req.app.io, 'message', 'Patient record updated');
     }).catch(err => {
       console.log("error in soap/post ", err);
       res.send('alert("An error has occured during the update of this visit. Please contact the systems administrator")');
-    
+      helpers.emit_to_client(req.app.io, 'message', 'an error occured during save');
     })
       });
   });
