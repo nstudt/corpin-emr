@@ -2,12 +2,6 @@ const uuidv4 = require("uuid/v4");
 
 class User {
   constructor(obj) {
-    if (!obj._id) {
-      this._id = uuidv4();
-    } else {
-      this._id = obj._id;
-    }
-
     if (!obj.created) {
       this.created = new Date();
     } else {
@@ -25,6 +19,9 @@ class User {
     this.active = obj.active;
     this.password = obj.password;
     this.last_modified = obj.last_modified;
+    if (!obj._id || !obj.id) {
+      this._id = this.user_name
+    }
     this.is_admin = obj.is_admin; //boolean
    if (obj.role == "physician"){
       this.physican_id = obj.last_name = obj.first_name;

@@ -1,5 +1,5 @@
-2018/11/15-15:54:14.510 a8 Recovering log #3
-2018/11/15-15:54:14.510 a8 Level-0 table #5: started
-2018/11/15-15:54:14.894 a8 Level-0 table #5: 1267 bytes OK
-2018/11/15-15:54:15.075 a8 Delete type=0 #3
-2018/11/15-15:54:15.075 a8 Delete type=3 #2
+2018/11/16-11:02:04.507 3fe8 Recovering log #80
+2018/11/16-11:02:04.507 3fe8 Level-0 table #83: started
+2018/11/16-11:02:04.653 3fe8 Level-0 table #83: 254 bytes OK
+2018/11/16-11:02:04.765 3fe8 Delete type=0 #80
+2018/11/16-11:02:04.765 3fe8 Delete type=3 #78

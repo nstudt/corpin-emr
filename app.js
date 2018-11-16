@@ -110,10 +110,11 @@ app.post("/admin/replicate_patients", admin_controller.replicate_patients);
 app.post("/admin/replicate_users", admin_controller.replicate_users);
 app.get("/admin/build_find_index", admin_controller.build_find_index);
 app.get("/admin/build_find_index2", admin_controller.build_find_index2);
-app.post("/admin/replicate_from_remote", admin_controller.replicate_from_remote);
+app.get("/admin/replicate_from_remote", admin_controller.replicate_from_remote);
 app.post("/admin/replicate_to_remote", admin_controller.replicate_to_remote);
 
 app.post("/users/create", user_controller.create_user);
+app.post("/users/edit", user_controller.edit_user);
 app.get("/users", user_controller.render_users);
 app.post("/users/:id", user_controller.read_user);
 app.get("/users/update/:id", user_controller.update_user);

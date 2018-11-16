@@ -1,127 +1,27 @@
 <div class="card sameheight-item stats" data-exclude="xs">
 	<div class="card-block card-body">
-
-		<div class="title-block">
-			<h4 class="title">
-				<p>Stats</p></h4>
-				<div>{{#each indexes}}</div>
-				<ul>
-					<li>{{ddoc}}</li>
-					<li>{{type}}</li>
-					<li>{{name}}</li>
-					<li>{{type}}</li>
-					
-				</ul>
-			<div>{{/each}}</div>
-			<div>
-				<ul>
-					
-					<li></li>
-					<li></li>
-					<li>{{info.auto_compaction}}</li>
-				</ul>
+		<div class="container">
+			<h3>Database Info</h3>
+			<div class="row">
+				<div class="col">
+					<h5>Patients</h5>
+					<ul class="list-group">
+						<li class="list-group-item"><span>Number of Records: {{info.doc_count}}</span></li>
+						<li class="list-group-item"><span>Database Size</span></li>
+						<li class="list-group-item"><span>Remote Server Status</span></li>
+						<li class="list-group-item"><span>Last Replication: {{info.update_seq}}</span></li>
+					</ul>
+				</div>
+				<div class="col">
+					<h5>Users</h5>
+					<ul class="list-group">
+						<li class="list-group-item"><span>Number of Records:</span></li>
+						<li class="list-group-item"><span>Database Size</span></li>
+						<li class="list-group-item"><span>Remote Server Status</span></li>
+						<li class="list-group-item"><span>Last Replication: </span></li>
+					</ul>
+				</div>
 			</div>
-			<p class="title-description">
-				Server and Database metrics
-			</p>
 		</div>
-
-		<div class="row row-sm stats-container">
-			<div class="col-12 col-sm-6 stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-book"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						{{info.doc_count}}
-					</div>
-					<div class="name">
-						{{info.db_name}} Number of Records
-					</div>
-				</div>
-				
-			</div>
-
-			<div class="col-12 col-sm-6 stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-shopping-cart"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						{{info.update_seq}}
-					</div>
-					<div class="name">
-						Update Seq
-					</div>
-				</div>
-				
-			</div>
-
-			<div class="col-12 col-sm-6  stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-line-chart"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						{{info.adapter}}
-					</div>
-					<div class="name">
-						Backend Adapter
-					</div>
-				</div>
-			
-			</div>
-
-
-
-			<div class="col-12 col-sm-6  stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-users"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						359
-					</div>
-					<div class="name">
-						Remote DB: 
-					</div>
-				</div>
-				
-			</div>
-
-
-			<div class="col-12 col-sm-6  stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-list-alt"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						59
-					</div>
-					<div class="name">
-						Tickets closed
-					</div>
-				</div>
-				
-			</div>
-
-			<div class="col-12 col-sm-6 stat-col">
-				<div class="stat-icon">
-					<i class="fa fa-dollar"></i>
-				</div>
-				<div class="stat">
-					<div class="value">
-						{{system.listen}}
-					</div>
-					<div class="name">
-						Server Listening
-					</div>
-				</div>
-				
-			</div>
-
-
-		</div>
-
 	</div>
 </div>

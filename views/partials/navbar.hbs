@@ -28,26 +28,22 @@
                 <a class="nav-link w3-large" href="/icd10">ICD-10</a>
             </li>
 
-            {{!-- <li class="nav-item w3-right">
-                <a href=# class="nav-link w3-large">Admin</a>
-            </li> --}}
             <li class="nav-item w3-right">
-                <a href="/admin/replicate_to_remote" class="nav-link w3-large">Push Records</a>
+                <a href="/admin" class="nav-link w3-large">Admin</a>
+            </li>
+            <li class="nav-item w3-right">
+                
             </li>
             {{!-- <li class="nav-item w3-right">
                 <a href="/admin/test" class="nav-link w3-large">test get</a>
             </li> --}}
     </div>
     </li>
-    <li class="nav-item">
-        <a id="atag" class="nav-link w3-large" href="#"><span id="repl_badge" class="badge badge-light">Replication</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link w3-large" href="/admin"><span id="conn_badge" class="badge badge-success">Connection</span></a>
-    </li>
+   
     </ul>
 
     </div>
+    <i id="uploading" href="/admin/replicate_to_remote" class="fas fa-cloud-upload-alt" hidden>Uploading</i>
     <form class="form-inline my-2 my-lg-0 w3-right" action="/patients/search" method='post'>
         <a class="nav-link w3-right" href="/users"> <i class="fas fa-cog"></i> User: admin </a>
         <input class="form-control mr-sm-2" id="search" name="search" type="search" placeholder="Search Last Name"
@@ -77,23 +73,22 @@
     });
 </script>
 <script>
-    //toggle replication state.
-    var repl_state = $('#repl_badge').class;
-    $("#atag").click(function () {
-        $.post("/admin/toggle_repl", { state: repl_state }, function (data, status) {
-            console.log(data);
-            console.log(status);
-            $('#repl_badge').removeClass();
-            $('#repl_badge').addClass(data);
-
-        });
-    });
+    function uploading(state){
+        if (state = true){
+            $("#uploading").show();
+        }else
+        $("uploading").hide();
+    };
 </script>
 <script>
     $(document).ready(function () {
         var socket = io.connect();
         socket.on('message', function (data) {
             notifyMe(data);
+            socket.emit('response', 'response received');
+        })
+        socket.on('replication', function (state) {
+            uploading(state);
             socket.emit('response', 'response received');
         })
     });

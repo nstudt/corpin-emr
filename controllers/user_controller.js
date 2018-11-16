@@ -66,7 +66,19 @@ module.exports.render_users = (req, res) => {
       }
     });
 };
-
+module.exports.edit_user = (req, res) => {
+  req.app.udb
+    .get(req.body.id, { attachments: true })
+    .then(doc => {
+      var user = new umodel.User(doc);
+      res.render("users_edit", {
+        user: user
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
 module.exports.read_user = (req, res) => {
   req.app.udb
     .get(req.params.id, { attachments: true })

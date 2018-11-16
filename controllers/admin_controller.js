@@ -18,8 +18,9 @@ const pmodel = require("@models/patientModel");
 var system = new helpers.local_system();
 
 ("use strict");
-// var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
+var HOST = "http://admin:Sdfg@345@52.74.45.66:5984/patients";
 // var remoteDB = new PouchDB('http://52.74.45.66:5984/patients');
+// var remoteUDB = new PouchDB('http://52.74.45.66:5984/userdb');
 var remoteDB = new PouchDB("http://192.168.0.180:2000/patients");
 var remoteUDB = new PouchDB("http://192.168.0.180:2000/userdb");
 
@@ -165,11 +166,12 @@ module.exports.replicate_from_remote = (req, res) => {
     })
     .on('change', info => {
       console.log('Replication Progress', helpers.getProgress(info.pending));
+      helpers.emit_to_client(req.app.io, 'replication', 'true');
     })
     .on("complete", result => {
       console.log(" pull relication result", result);
       console.log("stopped replication after completion");
-      helpers.emit_to_client(req.app.io, 'message', 'patient records replicated from server success!');
+      helpers.emit_to_client(req.app.io, 'replication', 'false');
     })
     .on("denied", err => {
       console.log("deny happened during pull of patients from remote: ", err);
@@ -274,7 +276,7 @@ module.exports.replicate_patients = (req, res) => {
 module.exports.replicate_users = (req, res) => {
   var udb = req.app.udb;
   udb
-    .sync(remoteDB, {
+    .sync(remoteUDB, {
       live: false
     })
     .on('change', info => {
@@ -283,7 +285,8 @@ module.exports.replicate_users = (req, res) => {
     .on("complete", results => {
       console.log(results);
       req.app.set("replication", "off");
-      res.redirect("/patients");
+      res.redirect("/admin");
+      helpers.emit_to_client(req.app.io, 'message', 'Replication with Server Completed!');
     })
     .on("error", err => {
       console.log("error in replication to remoteDB", err);
