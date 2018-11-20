@@ -4,7 +4,7 @@
 
 Corpin EMR is an offline-first EMR applicaiton with a number of extensions to facilitate small clinics in the rural Philippines. All core features are available without and internet connection.
 
-Corpin EMR is designed to work the way the local doctors do without making them think about the technology. If a physician is in the clinic, then the application will utilize available services and automatically sync to the Cloud. When the doctor is out in the field without Internet, records, SOAP notes and prescriptions are always available.
+Corpin EMR is designed to accomodate the workflow of physicians that utilize medical SOAP notes in thier workflow. This style of workflow is very common for general practice clinics.
 
 Simplicity and ease of use where primary factors in the design.
 
@@ -14,22 +14,24 @@ Corpin-EMR is originally designed to support health clinics in three ways:
 
 1) Manage patients digital records. 
 2) Store and retrieve scanned paper records. 
-3) Write and manage patient prescriptions. 
+3) Write and manage patient prescriptions.
+4) Provide assitive diagnostics where practical.
 
-Thus, you will not find clinic scheduling, billing or other fancy EMR features. Because this application was designed with rural healthcare in mind, meeting "Meaningful Use" requirements was not a consideration.
+You will not find clinic scheduling, billing or other fancy EMR features in the first few versions. Because this application was designed with rural healthcare in mind, meeting "Meaningful Use" requirements was not a consideration.
 
-Secure ACL to data (not yet implemented).
+Secure ACL to data.
 Patient management. (CRUD)
 Encoded (digital) and scanned-paper records management.
 Medical SOAP notes accessed through he View Patient screen.
 Write Rx from the Plan section of SOAP notes.
 Automatic Internet detection and sync to Cloud Couchdb server.
-Multi-client support through master-master dbs support.
+Multi-client support through masterless dbs support.
 Core ICD-10 and RxNorm databases for offline-lookup. (todo)
 Type ahead ICD-10 and RxNorm context entry during encounter.
 Obstetrics support through flagging of patient pregnancy.
 Integrated mode-b ultra-sound support. (todo)
 Patient picture association. (todo)
+Historical vitals.
 
 ### [](https://github.com/nstudt/corpin-emr#getting-started)Getting Started
 
