@@ -1,6 +1,6 @@
 > # Corpin EMR
 
-## [](https://github.com/nstudt/corpin-emr#responsive-healthcare-for-the-philippines)Responsive Healthcare for the Philippines
+## [](https://github.com/nstudt/corpin-emr#responsive-healthcare-for-the-philippines)Responsive Healthcare for the Emerging Nations
 
 Corpin EMR is an offline-first EMR applicaiton with a number of extensions to facilitate small clinics in the rural Philippines. All core features are available without and internet connection.
 
