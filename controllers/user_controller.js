@@ -68,7 +68,7 @@ module.exports.render_users = (req, res) => {
 };
 module.exports.edit_user = (req, res) => {
   req.app.udb
-    .get(req.body.id, { attachments: true })
+    .get(req.body.id)
     .then(doc => {
       var user = new umodel.User(doc);
       res.render("users_edit", {

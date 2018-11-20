@@ -12,7 +12,7 @@
   }
 </style>
 
-<body onload="checkAtrributes('{{patient.pregnant}}')">
+<body>
   {{> header}}
   {{> navbar}}
   {{!-- top container --}}
@@ -114,7 +114,6 @@
 
   <script>
     function display_visit(d) {
-     
       x = document.querySelector('#frame1');
       x.srcdoc =
         "<p>Date: "+ d.date+ "<p>" +
@@ -140,14 +139,16 @@
   
 
   <script>
-  function checkAtrributes(attr){
-  if (attr==1 || "on"){
-    document.getElementById('pregnant').style.display = "inline";
-  }else{
-    document.getElementById('pregnant').style.display = "none";
+     $(document).ready(function () {
+  if (typeof {{pregnant}} === "undefined" || 0){
+    $('#pregnant').css("display","none");
+  }else if ({{pregnant}} === 1){
+    $('#pregnant').show();
+  }else {
+    console.log('none of the above')
   }
-  console.log(attr);
-}
+  console.log({{pregnant}});
+})
   </script>
 
 </body>

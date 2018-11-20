@@ -2,6 +2,7 @@ require('module-alias/register');
 const express = require("express");
 const app = express();
 const http = require('http').Server(app);
+const uuidv4 = require("uuid/v4");
 var socket = require('socket.io')
 const _ = require('underscore');
 const hbs = require("hbs");
@@ -18,8 +19,11 @@ const auth_controller = require('@controllers/auth_controller');
 const user_controller = require('@controllers/user_controller');
 const helpers = require("@root/helpers");
 const dbFuncs = require("@root/dbFuncs");
-
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const events = require('events').EventEmitter;
+const passport = require('passport');
+const LocalStrategy = require("passport-local").Strategy;
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var udb_name = "userdb";
@@ -31,6 +35,12 @@ var udb = new PouchDB(udb_name);
 app.use(fileUpload({ preserveExtension: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(require('cookie-parser')());
+
+//DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
+app.use(express.static(__dirname));
+app.set("view engine", "hbs");
+//initialize global objkects
 app.db = db;
 app.udb = udb;
 app.batch_size = 100;
@@ -39,8 +49,50 @@ app.dbinfo = new helpers.DBINFO();
 app.udbinfo = new helpers.DBINFO();
 app.replication = "off";
 app.app_path = __dirname;
-app.physician_id = "CorpinChloe"; //dev only
+app.physician_id = "DrCorpin"; //dev only
+// configure passport.js to use the local strategy
+const users = [{ id: "admin", username: "system", password: "password" }];
 
+passport.use(new LocalStrategy(
+  { usernameField: 'username',
+passwordField: 'password' },
+  (username, password, done) => {
+    console.log('Inside local strategy callback')
+    // here is where you make a call to the database
+    // to find the user based on their username or email address
+    // for now, we'll just pretend we found that it was users[0]
+    const user = users[0] 
+    if(username === user.username && password === user.password) {
+      console.log('Local strategy returned true')
+      return done(null, user)
+    }
+  }
+));
+passport.serializeUser(function(user, cb) {
+cb(null, user.id);
+});
+passport.deserializeUser(function(id, cb) {
+app.udb.get(id, function(err, user) {
+  if (err) {
+    return cb(err);
+  }
+  cb(null, user);
+});
+});
+
+app.use(session({
+  genid: (req) => {
+    console.log('Inside the session middleware')
+    console.log(req.sessionID)
+    return uuidv4() // use UUIDs for session IDs
+  },
+  store: new FileStore(),
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 // app.use('/admin/toggle_repl', function(req, res, next) {
 //   try{
 //     app.set('replication', 'on');
@@ -51,9 +103,7 @@ app.physician_id = "CorpinChloe"; //dev only
 //    next();
 // });
 
-//DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
-app.use(express.static(__dirname));
-app.set("view engine", "hbs");
+
 
 hbs.registerPartials(path.join(__dirname , "views/partials"));
 
@@ -74,9 +124,22 @@ hbs.registerHelper('list', function(items, options) {
 app.get('/test', function(req, res) {
   res.render('test');
 })
-
+app.post('/login', (req, res, next) => {
+  console.log('Inside POST /login callback')
+  passport.authenticate('local', (err, user, info) => {
+    console.log('Inside passport.authenticate() callback');
+    console.log(`req.session.passport: ${JSON.stringify(req.session.req.passport)}`)
+    console.log(`req.user: ${JSON.stringify(req.user)}`)
+    req.login(user, (err) => {
+      console.log('Inside req.login() callback')
+      console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`)
+      console.log(`req.user: ${JSON.stringify(req.user)}`)
+      return res.send('You were authenticated & logged in!\n');
+    })
+  })(req, res, next);
+})
 app.get("/", index_controller.home_page);
-app.post("/login", auth_controller.login);
+// app.post("/login", auth_controller.login);
 
 app.get("/patients", patients_controller.render_patients);
 app.post("/patients/edit", patients_controller.post_edit_patient);

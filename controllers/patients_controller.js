@@ -97,10 +97,11 @@ module.exports.render_addPage = (req, res) => {
 module.exports.add_patient = (req, res) => {
   db = req.app.db;
   var newPatient = new pmodel.Patient(req.body);
-  newPatient.added = new Date();
-  newPatient.visit_ids = [];
+  patient = helpers.fix_patient(newPatient);
+  patient.added = new Date();
+  patient.visit_ids = [];
   
-  return db.put(newPatient)
+  return db.put(patient)
     .then(result => {
       console.log('patient added' ,result);
       res.redirect("/patients");
@@ -113,6 +114,7 @@ module.exports.add_patient = (req, res) => {
 module.exports.get_edit_patient = (req, res) => {
   return dbFuncs.get_one(req.app.db, req.params.id)
     .then(patient => {
+      patient = helpers.fix_patient(patient);
       res.render("edit", {
         patient: patient,
         pregnant: patient.pregnant,
@@ -127,8 +129,9 @@ module.exports.get_edit_patient = (req, res) => {
 
 module.exports.post_edit_patient = (req, res) => {
   doc = req.body;
-  doc.modified = new Date()
-    dbFuncs.update(req.app.db, doc, () => {})
+  patient = helpers.fix_patient(doc);
+  patient.modified = new Date()
+    dbFuncs.update(req.app.db, patient, () => {})
       .then(() => {
         res.redirect("/patients");
         helpers.emit_to_client(req.app.io, 'message', 'patient record updated');

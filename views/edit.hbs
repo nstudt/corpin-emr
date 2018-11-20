@@ -2,8 +2,8 @@
 
 {{> head}}
 
-<body onload="set_attr()">
-    
+<body>
+
     {{> header}}
     {{> navbar}}
     <div class="card border-primary">
@@ -15,7 +15,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3 ">
                         <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" name="first_name"  value="{{patient.first_name}}"
+                        <input type="text" class="form-control" name="first_name" value="{{patient.first_name}}"
                             autofocus required>
                         <input type="hidden" id="custId" name="_id" value="{{patient._id}}">
                         <input type="hidden" id="custId" name="_rev" value="{{patient._rev}}">
@@ -26,13 +26,13 @@
                     </div>
                     <div class="form-group col-md-3 ">
                         <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" name="last_name"  required value="{{patient.last_name}}">
+                        <input type="text" class="form-control" name="last_name" required value="{{patient.last_name}}">
                     </div>
                     {{!-- <div class="form-group col-md-2 ">
                         <img src="" alt="200x200 Picture" class="img-thumbnail">
                     </div> --}}
-                    
-                     <div class="form-check form-check-inline col-xs-2 ">
+
+                    <div class="form-check form-check-inline col-xs-2 ">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="sex" id="male" value="male">
                             <label class="form-check-label" for="male">
@@ -46,7 +46,7 @@
                             </label>
                         </div>
                         <div class="form-check">
-                            <input type="hidden" name="pregnant" value="0"><input id="pregnant" type="checkbox" onclick="this.previousSibling.value=1-this.previousSibling.value">
+                            <input name="pregnant" id="pregnant" type="checkbox"/>
                             <label class="form-check-label form-control" for="pregnant">
                                 Pregnant
                             </label>
@@ -61,11 +61,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6 ">
                     <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address"  value="{{patient.address}}">
+                    <input type="text" class="form-control" id="address" name="address" value="{{patient.address}}">
                 </div>
                 <div class="form-group col-md-2 ">
                     <label for="purok">Purok</label>
-                    <input type="text" class="form-control" id="purok" name="purok"  value="{{patient.purok}}">
+                    <input type="text" class="form-control" id="purok" name="purok" value="{{patient.purok}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city">City</label>
@@ -75,13 +75,13 @@
                         <option> Dapa</option>
                         <option> Pilar</option>
                         <option>Santa Monica</option>
-                        <option>Del Carmen</option> 
-                        <option>San Isidro</option> 
-                        <option>Pacifico</option> 
-                        <option>Burgos</option> 
-                        <option>Soccorro</option> 
-                        <option>San Benito</option> 
-                        <option>Alegria</option> 
+                        <option>Del Carmen</option>
+                        <option>San Isidro</option>
+                        <option>Pacifico</option>
+                        <option>Burgos</option>
+                        <option>Soccorro</option>
+                        <option>San Benito</option>
+                        <option>Alegria</option>
                     </datalist>
                 </div>
             </div>
@@ -95,13 +95,13 @@
                         <option> Dinagat</option>
                         <option> Agusan</option>
                         <option>Bohol</option>
-                        <option>Surigao del Sur</option> 
+                        <option>Surigao del Sur</option>
                     </datalist>
                 </div>
 
                 <div class="form-group col-md-4 ">
                     <label for="phone1">Phone</label>
-                    <input type="text" class="form-control" name="phone1" size="15"value="{{patient.phone1}}">
+                    <input type="text" class="form-control" name="phone1" size="15" value="{{patient.phone1}}">
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                     <label for="dob">Date of Birth</label>
                     <input type="text" class="form-control" name="dob" size="15" placeholder="MM/DD/YY" value="{{patient.dob}}">
                 </div>
-                <div class="form-group col-md-2" >
+                <div class="form-group col-md-2">
                     <label for=" blood_type">Blood Type</label>
                     <select id="blood_type" class="form-control" name="blood_type" default="unkown" value="{{patient.blood_type}}">
                         <option>unknown</option>
@@ -132,7 +132,7 @@
                 </div>
                 <div class="form-group col-md4 ">
                     <label for="phil_health">PhilHelath #</label>
-                    <input type="text" class="form-control" name="phil_health"  value="{{patient.phil_health}}">
+                    <input type="text" class="form-control" name="phil_health" value="{{patient.phil_health}}">
                 </div>
 
             </div>
@@ -141,11 +141,13 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="allergies">Allergies</label>
-                        <input type="text" class="form-control" name="allergies" placeholder="seperate with comma" value="{{patienet.allergies}}">
+                        <input type="text" class="form-control" name="allergies" placeholder="seperate with comma"
+                            value="{{patienet.allergies}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="medications">Medications</label>
-                        <input type="text" class="form-control" name="medications" placeholder="seperate with comma" value="{{patienet.medications}}">
+                        <input type="text" class="form-control" name="medications" placeholder="seperate with comma"
+                            value="{{patienet.medications}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="height">Height</label>
@@ -174,16 +176,21 @@
             </form>
 
         </div>
-    <script>
-    function set_attr() {
-    document.getElementById('pregnant').checked = {{pregnant}};
-    if ('{{sex}}' == "male"){
-    document.getElementById('male').checked = true;
-    } else {
-    document.getElementById('female').checked = true;    
-    };
-    };
-    </script>
+        <script>
+            $(document).ready(function () {
+                console.log({{ pregnant }});
+            if ({{pregnant}}) {
+                console.log("patient is pregnant")
+                $("#pregnant").prop("checked", true);
+            }
+            if ({{sex}} == "male") {
+                $("#mail").prop("checked", true);
+            } else {
+                $("#female").prop("checked", true);
+            };
+         })
+
+        </script>
 </body>
 
 </html>

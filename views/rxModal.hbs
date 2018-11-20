@@ -11,94 +11,58 @@
 </style>
 
 <div id="myModal">
-  <div class="modal-dialog printMe" style="width: 300px;height: 750px; padding: 0px;">
+  <div class="modal-dialog printMe" style="width: 300px;height: 650px; padding: 0px;">
     <div class="modal-content">
-      <div class="container" style="padding: 0px margin: 0px;">
-        <form id="write_rx_form" action="/view/write_rx" method="post">
-          <div class="form-row w3-margin-top" style="width: 290px; margin: 0px; padding: 2px;height: 100px;">
-            <div class="col" style="width: 80px;height: 90px;"><img class="img" src="/assets/images/rx-80x.jpg"></div>
-            <div class="col" style="width: 210px;height: 90px;">
-              <ul class="list-unstyled">
-                <li>{{patient.last_name}}, {{patient.first_name}}</li>
+      
+          <div class="container" style="height: 600px;padding: 5px;">
+    <form>
+        <div class="form-row" style="width: 290px;padding: 5px;height: 100px;">
+            <div class="col" style="width: 80px;height: 80px;"><img src="/assets/images/rx-80x.jpg" class="img" /></div>
+            <div class="col" style="width: 210px;height: 80px;">
+                <ul class="list-unstyled">
+                    <li>{{patient.last_name}}, {{patient.first_name}}</li>
                 <li>{{patient.city}}</li>
                 <li>DOB: {{patient.dob}}</li>
-              </ul>
+                </ul>
             </div>
-          </div>
-          <div></div>
-
-          <div class="form-row" style="width: 290px;padding: 2px;height: 120px;">
-            <div class="col" style="width: 280px;height: 80px;">
-
-              <h4 style="background-color: #f7f3f3;padding: 2px;font-family: Oswald, sans-serif;width: 260px;">Prescription</h4>
-              <div class="form-group d-inline-block" style="width: 150px;padding: 2px;">
-                <label for="medication" style="font-size: 12px;">Medication</label>
-                <input class="form-control" type="text" name="medication" required="" placeholder="medication" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
-              <div class="form-group d-inline-block" style="width: 90px;padding: 2px;">
-                <label for="strength" style="font-size: 12px;">Strength</label>
-                <input class="form-control" type="text" name="strength" placeholder="100mg" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
+        </div>
+        <div></div>
+        <div class="form-row" style="width: 290px;padding: 5px;height: 60px;">
+            <div class="col" style="width: 280px;height: 60px;">
+                <fieldset style="width: 280px;"></fieldset>
+                    <legend style="background-color: #f7f3f3;padding: 4px;font-family: Oswald, sans-serif;width: 270px;">Prescription</legend>
+                </fieldset>
             </div>
-          </div>
-          <div class="form-row" style="width: 290px; height: 80px; padding: 2px;">
-            <div class="col" style="width: 90px;">
-              <div class="form-group d-inline-block" style="width: 84px;padding: 2px;">
-                <label for="amount" style="font-size: 12px;">Amount</label>
-                <input class="form-control" type="text" name="amount" required="" placeholder="1 tab" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
-              <div class="form-group d-inline-block" style="width: 84px;padding: 2px;">
-                <label for="route" style="font-size: 12px;">Route</label>
-                <input class="form-control" type="text" name="route" placeholder="P.O." style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
-              <div class="form-group d-inline-block" style="width: 84px;padding: 2px;">
-                <label for="frequency" style="font-size: 12px;">Frequency</label>
-                <input class="form-control" type="text" name="frequency" placeholder="daily" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
-            </div>
-          </div>
-          <div class="form-row" style="width: 290px;padding: 2px;">
-            <div class="col" style="width: 280px;">
-              <div class="form-group d-inline-block" style="width: 260px;"><label for="dispense" style="font-size: 12px;">Dispense</label>
-                <input class="form-control" type="text" name="dispense" required="" placeholder="dispense #30 (thirty)"
-                  style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;">
-              </div>
-            </div>
-          </div>
-          <div class="form-row" style="width: 290px;padding: 2px;">
-            <div class="col" style="width: 280px;">
-              <div class="form-group d-inline" style="width: 270px;">
-                <label class="float-left" for="refills" style="font-size: 12px;height: 20px;padding: 2px;">Refills:</label>
-                <input class="form-control" type="text" name="refills" required="" placeholder="0" style="font-size: 16px;font-family: 'Alfa Slab One', cursive;padding: 2px;width: 50px;height: 20px;">
-              </div>
-            </div>
-          </div>
-          <div class="form-row" style="width: 290px;padding: 2px;height: 80px;">
-            <div class="col" style="width: 280px;">
-              <div class="form-group d-inline-block" style="width: 215px;margin: 0px;">
-                <label for="signature" style="font-size: 12px;height: 18px;padding: 2px;">Signature:</label>
-                <input class="form-control" type="text" name="signature" required="" placeholder="Dr Chloe Digal-Corpin"
-                  style="font-size: 16px;font-family: 'Source Sans Pro', sans-serif;padding: 2px;width: 210px;height: 40px;">
-              </div>
-              <div class="form-group d-inline-block" style="width: 49px;margin: 0px;">
-                <label for="date" style="font-size: 12px;height: 18px;padding: 2px;width: 50px;">Date:</label>
-                <input class="form-control" type="date" name="date">
-              </div>
-              <input id="patient_id" name="patient_id" type="hidden" value={{patient._id}}>
+        </div>
+        <div class="form-row" style="width: 290px;height: 300px;">
+            <div class="col" style="width: 290px;"><textarea class="form-control" name="medications" style="width: 280px;height: 300px;"></textarea></div>
+        </div>
+        <div class="form-row" style="width: 290px;padding: 5px;height: 90px;">
+            <div class="col" style="width: 280px;height: 85px;">
+                <div class="form-group d-inline-block" style="width: 215px;margin: 0px;"><label for="signature" style="font-size: 12px;height: 18px;padding: 5px;">Signature:</label><input type="text" name="signature" required class="form-control form-control-lg" style="font-size: 16px;font-family: 'Source Sans Pro', sans-serif;padding: 5px;width: 210px;height: 50px;"
+                    /></div>
+                <div class="form-group d-inline-block" style="width: 49px;margin: 0px;">
+                  <label for="date" style="font-size: 12px;height: 18px;padding: 5px;width: 50px;">Date:</label>
+                  <input id="patient_id" name="patient_id" type="hidden" value={{patient._id}}>
               <input id="physician_id" name="physician_id" type="hidden" value={{physician._id}}>
+                  <input type="text" class="form-control" style="height: 50px;" />
+                  </div>
             </div>
-
-          </div>
-          <div class="modal-footer noprint" style="padding: 2px;">
+            <div class="modal-footer noprint" style="padding: 2px;">
             <button id="save" type="button" class="btn btn-primary">Save</button>
             <button id="saveAndPrint" type="button" class="btn btn-primary">Save and Print</button>
             <button id="close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
+        </div>
+    </form>
+</div>
       </div>
     </div>
   </div>
   </form>
 </div>
+
+
 
 <script>
   jQuery.fn.extend({

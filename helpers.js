@@ -55,10 +55,36 @@ function emit_to_client(io, type, data) {
   console.log('emit to client', type + data);
 }
 
+function fix_patient(patient){
+  switch(patient.pregnant){
+    case 1:
+      console.log('1 is a number');
+      break;
+    case "1":
+      console.log('1 is a string');
+      patient.pregnant = 1;
+      break;
+    case "undefined":
+      console.log('pregnant was underfined');
+      patient.pregnant = 0;
+      break;
+    case "on":
+      console.log("pregnant is set to on");
+      patient.pregnant = 1;
+      break;
+    default:
+    patient.pregnant = 0;
+    break;
+
+  }
+  return patient;
+}
+
 module.exports = {
     DBINFO,
     local_system,
     per_page,
     getProgress,
     emit_to_client,
+    fix_patient,
 }

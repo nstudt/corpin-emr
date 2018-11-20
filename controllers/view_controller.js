@@ -25,6 +25,7 @@ module.exports.view_patient = (req, res) => {
   return db.get(req.params.id, { attachments: true })
     .then(patient => {
       var patient = new pmodel.Patient(patient);
+      patient = helpers.fix_patient(patient);
       return db
         .query("index/visits", { key: patient._id, include_docs: true })
         .then(visits => {
@@ -32,7 +33,8 @@ module.exports.view_patient = (req, res) => {
           res.render("view", {
             patient: patient,
             visits: visits.rows,
-            pregnant: patient.pregnant
+            pregnant: patient.pregnant,
+            sex: patient.sex
           });
         })
         .catch(err => {
@@ -56,14 +58,14 @@ module.exports.view_rx = (req, res) => {
     prescription.date = new Date();
     return dbFuncs.create(req.app.db, prescription) //create prescrition
     .then((doc) => { //rx is will be in doc
-      return dbFuncs.add_medication(req.app.db, req.body.patient_id, req.body.medication)
-    }).then((result) => {
       helpers.emit_to_client(req.app.io, 'message', 'prescription saved');
-      console.log(result);
+      return dbFuncs.add_medication(req.app.db, req.body.patient_id, doc._id)
+    }).then((result) => {
+        console.log(result);
     }).catch((err) => {
       console.log('error writing prescription', err);
       helpers.emit_to_client(req.app.io, 'message', 'error writing prescription');
-    })
+    });
   }
 
 //TODO: send flash message on update success
