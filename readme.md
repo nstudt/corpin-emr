@@ -10,14 +10,14 @@ Simplicity and ease of use where primary factors in the design.
 
 ### [](https://github.com/nstudt/corpin-emr#features)Features
 
-Corpin-EMR is originally designed to support health clinics in three ways:
+Corpin-EMR is originally designed to support health clinics in the following ways:
 
 1) Manage patients digital records. 
 2) Store and retrieve scanned paper records. 
 3) Write and manage patient prescriptions.
 4) Provide assitive diagnostics where practical.
 
-You will not find clinic scheduling, billing or other fancy EMR features in the first few versions. Because this application was designed with rural healthcare in mind, meeting "Meaningful Use" requirements was not a consideration.
+You will not find scheduling, billing or other fancy EMR features in the first few versions. Because this application was designed with rural healthcare in mind, meeting "Meaningful Use" requirements was not a consideration.
 
 Secure ACL to data.
 Patient management. (CRUD)
