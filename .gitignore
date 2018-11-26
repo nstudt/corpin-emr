@@ -11,5 +11,6 @@
 /._users
 /patients/*
 /users
-userdb/*
+/userdb
+/userdb/*
 

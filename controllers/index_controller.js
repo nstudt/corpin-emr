@@ -8,6 +8,7 @@ const helpers = require("@root/helpers");
 
 exports.home_page = ((req, res) => {
   res.render("index", {
-    replication: req.app.replication
+    replication: req.app.replication,
+    userid: false
   });
 });

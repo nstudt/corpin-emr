@@ -1,4 +1,5 @@
 const uuidv4 = require("uuid/v4");
+const bcrypt   = require('bcryptjs');
 
 class User {
   constructor(obj) {
@@ -17,7 +18,7 @@ class User {
     this.email = obj.email;
     this.role = obj.role;
     this.active = obj.active;
-    this.password = obj.password;
+    this.password = this.generateHash(obj.password);
     this.last_modified = obj.last_modified;
     if (!obj._id || !obj.id) {
       this._id = this.user_name
@@ -27,6 +28,15 @@ class User {
       this.physican_id = obj.last_name = obj.first_name;
   }
   };
+
+  generateHash(password) {
+    return bcrypt.hashSync(password, 8);
+  };
+
+  validPassword(password) {
+    return bcrypt.compareSync(password, this.local.password);
+};
+
 }
 
 

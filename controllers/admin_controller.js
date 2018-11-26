@@ -135,7 +135,7 @@ module.exports.build_find_index = (req, res) => {
 
 module.exports.build_find_index2 = (req, res) => {
   return dbFuncs
-    .buildUsersFindIndex(req.app.db)
+    .buildUsersFindIndex(req.app.udb)
     .then(result => {
       console.log("from build user index", result);
       res.redirect("/admin");

@@ -1,41 +1,39 @@
-require('module-alias/register');
+require("module-alias/register");
 const express = require("express");
 const app = express();
-const http = require('http').Server(app);
+const http = require("http").Server(app);
 const uuidv4 = require("uuid/v4");
-var socket = require('socket.io')
-const _ = require('underscore');
+var socket = require("socket.io");
+const _ = require("underscore");
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
 const PouchDB = require("pouchdb");
 PouchDB.plugin(require("pouchdb-find"));
 const fileUpload = require("express-fileupload");
-const index_controller = require('@controllers/index_controller');
-const view_controller = require('@controllers/view_controller');
-const patients_controller = require('@controllers/patients_controller');
-const admin_controller = require('@controllers/admin_controller');
-const auth_controller = require('@controllers/auth_controller');
-const user_controller = require('@controllers/user_controller');
+const index_controller = require("@controllers/index_controller");
+const view_controller = require("@controllers/view_controller");
+const patients_controller = require("@controllers/patients_controller");
+const admin_controller = require("@controllers/admin_controller");
+const auth_controller = require("@controllers/auth_controller");
+const user_controller = require("@controllers/user_controller");
 const helpers = require("@root/helpers");
 const dbFuncs = require("@root/dbFuncs");
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
-const events = require('events').EventEmitter;
-const passport = require('passport');
-const LocalStrategy = require("passport-local").Strategy;
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
+const passport = require("passport");
 var dbname = "patients";
 var db = new PouchDB(dbname);
 var udb_name = "userdb";
 var udb = new PouchDB(udb_name);
 
-'use strict';
+("use strict");
 
 //fileUpload is from express-fileUpload
 app.use(fileUpload({ preserveExtension: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(require('cookie-parser')());
+app.use(require("cookie-parser")());
 
 //DO NOT CHANGE THIS - REQUIRED TO RUN BOOTSTRAP LOCALLY
 app.use(express.static(__dirname));
@@ -50,99 +48,54 @@ app.udbinfo = new helpers.DBINFO();
 app.replication = "off";
 app.app_path = __dirname;
 app.physician_id = "DrCorpin"; //dev only
-// configure passport.js to use the local strategy
-const users = [{ id: "admin", username: "system", password: "password" }];
 
-passport.use(new LocalStrategy(
-  { usernameField: 'username',
-passwordField: 'password' },
-  (username, password, done) => {
-    console.log('Inside local strategy callback')
-    // here is where you make a call to the database
-    // to find the user based on their username or email address
-    // for now, we'll just pretend we found that it was users[0]
-    const user = users[0] 
-    if(username === user.username && password === user.password) {
-      console.log('Local strategy returned true')
-      return done(null, user)
-    }
-  }
-));
-passport.serializeUser(function(user, cb) {
-cb(null, user.id);
-});
-passport.deserializeUser(function(id, cb) {
-app.udb.get(id, function(err, user) {
-  if (err) {
-    return cb(err);
-  }
-  cb(null, user);
-});
-});
 
-app.use(session({
-  genid: (req) => {
-    console.log('Inside the session middleware')
-    console.log(req.sessionID)
-    return uuidv4() // use UUIDs for session IDs
-  },
-  store: new FileStore(),
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: true
-}));
+
+app.use(
+  session({
+    genid: req => {
+      console.log("Inside the session middleware");
+      console.log(req.sessionID);
+      return uuidv4(); // use UUIDs for session IDs
+    },
+    store: new FileStore(),
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use('/admin/toggle_repl', function(req, res, next) {
-//   try{
-//     app.set('replication', 'on');
-//   }
-//   catch(err) {
-//     console.log(err)
-//   }
-//    next();
-// });
 
-
-
-hbs.registerPartials(path.join(__dirname , "views/partials"));
+hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 //call this to pass data from an onclick to javascript function in the view
 hbs.registerHelper("json", function(obj) {
   return new hbs.SafeString(JSON.stringify(obj));
 });
 
-hbs.registerHelper('list', function(items, options) {
+hbs.registerHelper("list", function(items, options) {
   var out = "<ul>";
-  for(var i=0, l=items.length; i<l; i++) {
+  for (var i = 0, l = items.length; i < l; i++) {
     out = out + "<li>" + options.fn(items[i]) + "</li>";
   }
   return out + "</ul>";
 });
 
 //start routes
-app.get('/test', function(req, res) {
-  res.render('test');
-})
-app.post('/login', (req, res, next) => {
-  console.log('Inside POST /login callback')
-  passport.authenticate('local', (err, user, info) => {
-    console.log('Inside passport.authenticate() callback');
-    console.log(`req.session.passport: ${JSON.stringify(req.session.req.passport)}`)
-    console.log(`req.user: ${JSON.stringify(req.user)}`)
-    req.login(user, (err) => {
-      console.log('Inside req.login() callback')
-      console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`)
-      console.log(`req.user: ${JSON.stringify(req.user)}`)
-      return res.send('You were authenticated & logged in!\n');
-    })
-  })(req, res, next);
-})
+//app.use(auth_controller.isLoggedIn)
+app.get("/test", function(req, res) {
+  res.render("test");
+});
+
+app.post("/login", auth_controller.login);
+
 app.get("/", index_controller.home_page);
 // app.post("/login", auth_controller.login);
 
-app.get("/patients", patients_controller.render_patients);
-app.post("/patients/edit", patients_controller.post_edit_patient);
+app.get("/patients", auth_controller.isLoggedIn, patients_controller.render_patients);
+app.post("/patients/edit", auth_controller.isLoggedIn, patients_controller.post_edit_patient);
 app.post("/patients/upload", patients_controller.file_upload);
 app.post("/patients", patients_controller.add_patient);
 app.get("/patients/add", patients_controller.render_addPage);
@@ -150,7 +103,7 @@ app.get("/patients/edit/:id", patients_controller.get_edit_patient);
 app.post("/patients/delete/:id", patients_controller.delete_patient);
 app.post("/patients/search", patients_controller.search);
 
-app.get("/view/:id", view_controller.view_patient);
+app.get("/view/:id", auth_controller.isLoggedIn, view_controller.view_patient);
 app.get("/view/soap/:id", view_controller.render_soap);
 app.post("/view/soap/:id", view_controller.post_soap);
 app.post("/view/rx", view_controller.view_rx);
@@ -163,7 +116,7 @@ app.get("/rxnorm", (req, res) => {
 app.get("/icd10", (req, res) => {
   res.render("icd10");
 });
-app.get("/admin", admin_controller.render_admin);
+app.get("/admin", auth_controller.isLoggedIn, admin_controller.render_admin);
 app.post("/admin/destroy", admin_controller.delete_db);
 app.get("/admin/sample", admin_controller.sample_data);
 app.get("/admin/createdb", admin_controller.create_db);
@@ -176,7 +129,7 @@ app.get("/admin/build_find_index2", admin_controller.build_find_index2);
 app.get("/admin/replicate_from_remote", admin_controller.replicate_from_remote);
 app.post("/admin/replicate_to_remote", admin_controller.replicate_to_remote);
 
-app.post("/users/create", user_controller.create_user);
+app.post("/users/create", auth_controller.isLoggedIn, user_controller.create_user);
 app.post("/users/edit", user_controller.edit_user);
 app.get("/users", user_controller.render_users);
 app.post("/users/:id", user_controller.read_user);
@@ -190,47 +143,48 @@ app.get("/rx", (req, res) => {
   });
 });
 
-
 const port = 5000;
-http.listen(port, function(){
-  console.log('listening on:', port);
+http.listen(port, function() {
+  console.log("listening on:", port);
   check_dbs(app.db, app.udb);
 });
 
 function check_dbs(dbt, udbt) {
-  
-    return dbt.info()
-    .then((result) => {
+  return dbt
+    .info()
+    .then(result => {
       console.log(`${result.db_name} database is ready;`, result);
-      return udbt.info()
-    }).then((result2) => {
-      console.log(`${result2.db_name} udb is ready;`, result2);
-      if (result2.doc_count == 0){
-        console.log('user database contains no users. Creating default admin account')
+      return udbt.info();
+    })
+    .then(result2 => {
+      
+      if (result2.doc_count == 0) {
+        console.log(
+          "user database contains no users. Creating default admin account"
+        );
         //new installation detected, because no user detected
-        return dbFuncs.initialize_udb(udbt)
-        .then((result3) => {
-          console.log('user created', result3)
-        })
+        return dbFuncs.initialize_udb(udbt).then(result3 => {
+          console.log("user created", result3);
+        });
       }
-      console.log('udb contains users');
-      return udbt.allDocs()
-      }).then((docs) => {
-        console.log('users db:', docs);
-      })
-    .catch((err) => {
+      console.log("udb contains users");
+      console.log(`${result2.db_name} udb is ready;`, result2);
+      return udbt.allDocs();
+    })
+    .then(docs => {
+      console.log("users db:", docs);
+    })
+    .catch(err => {
       console.log(err);
     });
-    
- 
 }
 
-var io = require('socket.io')(http);
+var io = require("socket.io")(http);
 app.io = io;
 
-io.on('connection', function (socket) {
+io.on("connection", function(socket) {
   let msg = "connected to server";
-  socket.on('response', function (data) {
+  socket.on("response", function(data) {
     console.log(data);
   });
 });

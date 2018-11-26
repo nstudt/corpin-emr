@@ -45,7 +45,7 @@ function initialize_udb(udb){
   admin = {
     _id: "admin",
     type: "user",
-    user_name: "system",
+    user_name: "admin",
     last_name: "administrator",
     password: "password"
   };
